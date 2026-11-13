@@ -61,6 +61,7 @@ function KitchenEditor() {
     "food" | "paste" | "custom" | "scan" | "scale" | "pro" | "new" | null
   >(null);
   const [extraTools, setExtraTools] = useState(false);
+  const [barcodeForLabel, setBarcodeForLabel] = useState<string | undefined>();
   const [showNotes, setShowNotes] = useState(false);
   const [edit, setEdit] = useState<Ingredient | undefined>();
   const [message, setMessage] = useState("");
@@ -633,8 +634,10 @@ function KitchenEditor() {
       {modal === "custom" && (
         <CustomFood
           visible
+          barcode={barcodeForLabel}
           onClose={() => {
             setModal(null);
+            setBarcodeForLabel(undefined);
             setMessage("Custom food saved. Find it in Add ingredient.");
           }}
         />
@@ -644,6 +647,7 @@ function KitchenEditor() {
           visible
           onClose={() => setModal(null)}
           onAdd={addIngredient}
+          onManualFood={(code) => {setBarcodeForLabel(code);setModal("custom");}}
         />
       )}
       {modal === "pro" && <ProSheet visible onClose={() => setModal(null)} />}

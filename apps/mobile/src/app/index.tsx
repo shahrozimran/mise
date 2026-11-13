@@ -31,6 +31,7 @@ import {
 } from "../components/ui";
 import { Enter, TouchCard } from "../components/motion";
 import { MealArt } from "../components/MealArt";
+import { ConnectionStatus } from "../components/ConnectionStatus";
 import { goalIcons, Onboarding } from "../components/Onboarding";
 
 export default function Home() {
@@ -102,6 +103,7 @@ export default function Home() {
           </Txt>
         </Pressable>
       </Row>
+      <View style={{marginBottom:18}}><ConnectionStatus /></View>
       <Enter>
         <Txt style={{ color: colors.muted, fontSize: 14, marginBottom: 8 }}>
           YOUR KITCHEN, YOUR PACE

@@ -24,7 +24,7 @@ export interface Food {
   state: string;
   nutrients: Nutrients;
   measures: FoodMeasure[];
-  source: "USDA SR Legacy" | "USDA FoodData Central" | "Custom";
+  source: "USDA SR Legacy" | "USDA FoodData Central" | "Open Food Facts" | "Custom";
   sourceId: string;
   sourceVersion: string;
   barcode?: string;

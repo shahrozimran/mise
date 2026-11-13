@@ -57,6 +57,8 @@ The preview profile creates an installable APK. Production uses real Play entitl
 - Equal containers, measured cooked yield, per-100-g and custom weighed portions.
 - Three free recipe slots, an autosaved working draft, copies, and immutable cooked-batch snapshots.
 - Barcode scanner, manual barcode input, cached product lookup, and an optional exact-match USDA proxy.
+- Online barcode and packaged-food search through Open Food Facts works without a configured server. Confirm the community label values before use; only records with an explicit 100 g nutrition basis are accepted. Successful lookups and manual barcode labels are cached on the device for offline reuse. Unlisted products and liquids without gram weights can be entered manually.
+- A bundled Three.js welcome scene, responsive keyboard-aware sheets, live connection status, and Android navigation safe-area spacing.
 - Pro grocery aggregation with recipe multipliers, persisted list snapshots/checks, and pantry subtraction.
 - Pro uniform calorie scaling that preserves ingredient proportions and clears old measured yield.
 - Local PDF macro cards on Android; printable/save-to-PDF cards in the browser.

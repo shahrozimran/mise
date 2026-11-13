@@ -7,9 +7,11 @@ import { Button, Field, Muted, Notice, Row, Sheet } from "./ui";
 export function CustomFood({
   visible,
   onClose,
+  barcode,
 }: {
   visible: boolean;
   onClose: () => void;
+  barcode?: string;
 }) {
   const [name, setName] = useState("");
   const [basis, setBasis] = useState("100");
@@ -89,6 +91,7 @@ export function CustomFood({
                   },
                 ],
                 source: "Custom",
+                barcode,
                 sourceId: "personal",
                 sourceVersion: new Date().toISOString(),
               });

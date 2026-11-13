@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, View, Keyboard, ActivityIndicator } from "react-native";
 import {
   availableMeasures,
   Food,
@@ -12,7 +12,8 @@ import {
 } from "@mise/domain";
 import { foods } from "../data/catalog";
 import { id, useKitchen } from "../data/store";
-import { API_URL, request, searchOnline } from "../services/api";
+import { API_URL, request, searchOnline, searchProducts } from "../services/api";
+import { useOffline } from "./ConnectionStatus";
 import {
   Button,
   Chip,
@@ -46,6 +47,7 @@ export function FoodPicker({
   initialMeasureId?: string;
 }) {
   const data = useKitchen((s) => s.data)!;
+  const offline = useOffline();
   const [query, setQuery] = useState(initialQuery);
   const [selected, setSelected] = useState<Food | null>(
     existing?.food ?? initialFood ?? null,
@@ -72,8 +74,9 @@ export function FoodPicker({
   const grams =
     amount && measure ? (amount / measure.amount) * measure.grams : null;
   async function choose(food: Food, remote = false) {
+    Keyboard.dismiss();
     setError("");
-    if (remote) {
+    if (remote && food.source === "USDA FoodData Central") {
       setBusy(true);
       try {
         food = foodSchema.parse(
@@ -87,6 +90,7 @@ export function FoodPicker({
       }
       setBusy(false);
     }
+    if (remote) useKitchen.getState().addCustomFood(food);
     setSelected(food);
     setMeasureId("g");
   }
@@ -176,6 +180,7 @@ export function FoodPicker({
               {selected.source} · {selected.sourceVersion} · Food ID{" "}
               {selected.sourceId}. Nutrient values are estimates for the edible
               portion.
+              {selected.source === "Open Food Facts" && ` Source: https://world.openfoodfacts.org/product/${selected.sourceId}`}
             </Muted>
           )}
           {!selected.measures.length && (
@@ -215,14 +220,29 @@ export function FoodPicker({
             }}
             placeholder="Try chicken, lentils, or olive oil"
             autoFocus
+            editable={!busy}
           />
-          <ScrollView
-            style={{ maxHeight: 365 }}
-            keyboardShouldPersistTaps="handled"
-          >
+          {!offline && query.length > 1 && (
+            <Button
+              variant="secondary"
+              label={API_URL ? "Search USDA online" : "Search packaged foods online"}
+              icon="cloud-outline"
+              loading={busy}
+              onPress={() => {
+                setBusy(true);
+                setError("");
+                void (API_URL ? searchOnline(query) : searchProducts(query))
+                  .then((matches) => { setOnline(matches); if(!matches.length) setError("No matching products found online. Try another name or add the package label."); })
+                  .catch((e) => setError(e.message))
+                  .finally(() => setBusy(false));
+              }}
+            />
+          )}
+          <View>
             {[...online, ...list].map((food) => (
               <Pressable
                 key={food.id}
+                disabled={busy}
                 onPress={() => void choose(food, online.includes(food))}
                 accessibilityRole="button"
                 accessibilityLabel={`Select ${food.name}`}
@@ -265,22 +285,8 @@ export function FoodPicker({
                 </Muted>
               </View>
             )}
-          </ScrollView>
-          {API_URL && query.length > 1 && (
-            <Button
-              variant="secondary"
-              label="Search USDA online"
-              icon="cloud-outline"
-              loading={busy}
-              onPress={() => {
-                setBusy(true);
-                void searchOnline(query)
-                  .then(setOnline)
-                  .catch((e) => setError(e.message))
-                  .finally(() => setBusy(false));
-              }}
-            />
-          )}
+          </View>
+          {busy && <ActivityIndicator accessibilityLabel="Loading food details" color={colors.green} />}
           <Muted>
             Check raw versus cooked before adding. Cup and spoon weights use{" "}
             {data.settings.convention === "us"

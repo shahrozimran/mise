@@ -2,6 +2,12 @@
 
 Verified on 13 November 2026.
 
+## 0.3.0 mobile fixes
+
+The new Three.js welcome, Android bottom insets, keyboard-aware sheets, connection status, and public product lookup are documented in `MOBILE_FIXES.md`. Workspace type checks/lint, 75 domain/API tests, 13 browser workflows, 20/20 Expo Doctor checks, and Android Hermes export passed locally. The focused welcome/short-screen and barcode/offline flows were rerun after visual fixes. Live Open Food Facts lookup succeeded; the screenshot's barcode has no usable name/nutrition in its upstream record.
+
+The push to main starts the native APK build and release workflow. See GitHub Actions/Releases for its outcome and generated build suffix. The artifact details below describe the earlier local 0.2.0 build, not a native-device verification of 0.3.0. No Android device was connected for testing the reported Samsung keyboard/navigation behavior.
+
 ## Delivered artifacts
 
 - Android test APK: `artifacts/mise-0.2.0-arm64.apk`.

@@ -3,7 +3,7 @@
     "name": "Mise · Macro Architect",
     "slug": "mise-macro-architect",
     "scheme": "mise",
-    "version": "0.2.1",
+    "version": "0.3.0",
     "orientation": "portrait",
     "icon": "./assets/mise-icon.png",
     "userInterfaceStyle": "light",
@@ -12,7 +12,8 @@
     },
     "android": {
       "package": "com.mise.macroarchitect",
-      "versionCode": 3,
+      "versionCode": 4,
+      "softwareKeyboardLayoutMode": "resize",
       "allowBackup": false,
       "blockedPermissions": ["android.permission.RECORD_AUDIO", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"],
       "adaptiveIcon": {

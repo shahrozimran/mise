@@ -1,6 +1,8 @@
-import { PropsWithChildren, ReactNode } from "react";
+import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Keyboard,
+  useWindowDimensions,
   Modal,
   Platform,
   Pressable,
@@ -14,6 +16,7 @@ import {
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ConnectionStatus } from "./ConnectionStatus";
 
 export const colors = {
   bg: "#F6F6F0",
@@ -236,12 +239,7 @@ export function Page({
             </View>
             <Txt style={s.brand}>mise.</Txt>
           </Row>
-          <Row style={{ gap: 6 }}>
-            <View style={s.dot} />
-            <Txt style={{ fontSize: 12, color: colors.muted }}>
-              Your offline kitchen
-            </Txt>
-          </Row>
+          <ConnectionStatus />
         </Row>
         <View style={{ marginBottom: 25, gap: 9 }}>
           <Eyebrow>LESS LOGGING. MORE COOKING.</Eyebrow>
@@ -276,15 +274,25 @@ export function Sheet({
   onClose: () => void;
 }>) {
   const insets = useSafeAreaInsets();
+  const { height } = useWindowDimensions();
+  const [keyboardTop, setKeyboardTop] = useState<number | null>(null);
+  useEffect(() => {
+    const show = Keyboard.addListener("keyboardDidShow", (event) => setKeyboardTop(event.endCoordinates.screenY));
+    const hide = Keyboard.addListener("keyboardDidHide", () => setKeyboardTop(null));
+    return () => { show.remove(); hide.remove(); };
+  }, []);
+  const keyboardOverlap = keyboardTop === null ? 0 : Math.max(0, height - keyboardTop);
   return (
     <Modal
       visible={visible}
       transparent
       animationType="slide"
+      statusBarTranslucent
+      navigationBarTranslucent
       onRequestClose={onClose}
     >
-      <View style={[s.overlay, { paddingTop: insets.top + 18 }]}>
-        <View style={[s.sheet, { paddingBottom: Math.max(insets.bottom, 20) }]}>
+      <View style={[s.overlay, { paddingTop: insets.top + 8, paddingBottom: keyboardOverlap }]}>
+        <View style={[s.sheet, { paddingBottom: keyboardTop === null ? Math.max(insets.bottom, 20) : 12 }]}>
           <Row style={{ justifyContent: "space-between", marginBottom: 8 }}>
             <Txt style={{ fontSize: 23, fontWeight: "600", flex: 1 }}>
               {title}
@@ -302,6 +310,8 @@ export function Sheet({
             <Txt style={[s.muted, { marginBottom: 16 }]}>{subtitle}</Txt>
           )}
           <ScrollView
+            style={{ flex: 1, minHeight: 0 }}
+            keyboardDismissMode="on-drag"
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={{ gap: 16, paddingBottom: 18 }}
           >
@@ -407,7 +417,7 @@ export const s = StyleSheet.create({
     borderTopRightRadius: 25,
     maxWidth: 650,
     width: "100%",
-    maxHeight: "95%",
+    height: "94%",
   },
   footer: {
     color: "#9BA397",

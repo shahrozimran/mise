@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Platform, View } from "react-native";
+import { useRef, useState } from "react";
+import { Platform, View, ActivityIndicator, Linking } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { Food, Ingredient } from "@mise/domain";
 import { foods } from "../data/catalog";
@@ -12,18 +12,22 @@ export function BarcodeScanner({
   visible,
   onClose,
   onAdd,
+  onManualFood,
 }: {
   visible: boolean;
   onClose: () => void;
   onAdd: (ingredient: Ingredient) => void;
+  onManualFood: (code: string) => void;
 }) {
   const [permission, requestPermission] = useCameraPermissions();
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [product, setProduct] = useState<Food | null>(null);
+  const finding = useRef(false);
   async function find(value: string) {
-    if (busy) return;
+    if (finding.current) return;
+    finding.current = true;
     setCode(value);
     setBusy(true);
     setError("");
@@ -42,6 +46,7 @@ export function BarcodeScanner({
     } catch (e) {
       setError((e as Error).message);
     } finally {
+      finding.current = false;
       setBusy(false);
     }
   }
@@ -84,7 +89,8 @@ export function BarcodeScanner({
           icon="camera-outline"
           variant="secondary"
           onPress={() => {
-            void requestPermission();
+            if(permission && !permission.canAskAgain) void Linking.openSettings();
+            else void requestPermission();
           }}
         />
       ) : (
@@ -96,7 +102,7 @@ export function BarcodeScanner({
         label="Barcode number"
         value={code}
         onChangeText={(v) => {
-          setCode(v);
+          setCode(v.replace(/\s/g, ""));
           setError("");
         }}
         keyboardType="number-pad"
@@ -110,6 +116,9 @@ export function BarcodeScanner({
         onPress={() => void find(code)}
       />
       {!!error && <Notice error>{error}</Notice>}
+      {busy && <View accessibilityLiveRegion="polite" style={{alignItems:"center",gap:10}}><ActivityIndicator/><Muted>Looking up this package…</Muted></View>}
+      {!!error && <Button label="Try barcode again" variant="secondary" onPress={()=>void find(code)} />}
+      {!!error && <Button label="Add from package label" variant="secondary" onPress={()=>onManualFood(code)} />}
       <Muted>
         Cached products work offline. New products need a connection, and some
         local brands may not be listed.

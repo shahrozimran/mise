@@ -26,7 +26,7 @@ export const foodSchema = z.object({
       }),
     )
     .max(100),
-  source: z.enum(["USDA SR Legacy", "USDA FoodData Central", "Custom"]),
+  source: z.enum(["USDA SR Legacy", "USDA FoodData Central", "Open Food Facts", "Custom"]),
   sourceId: z.string(),
   sourceVersion: z.string(),
   barcode: z.string().optional(),

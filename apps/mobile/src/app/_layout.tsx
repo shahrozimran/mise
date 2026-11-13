@@ -1,14 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, AppState, View } from "react-native";
 import { Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useKitchen } from "../data/store";
 import { colors, Icon, Notice, Txt, Button } from "../components/ui";
 import { initializeBilling, refreshEntitlement } from "../services/billing";
 import { Onboarding } from "../components/Onboarding";
+import { Welcome } from "../components/Welcome";
 
 export default function Layout() {
+  return <SafeAreaProvider><KitchenLayout /></SafeAreaProvider>;
+}
+function KitchenLayout() {
+  const insets = useSafeAreaInsets();
+  const [welcomed, setWelcomed] = useState(false);
   const { data, loading, error, hydrate } = useKitchen();
   useEffect(() => {
     void hydrate();
@@ -28,13 +34,15 @@ export default function Layout() {
     };
   }, [hydrate]);
   return (
-    <SafeAreaProvider>
+    <>
       <StatusBar style="dark" />
       <SafeAreaView
         style={{ flex: 1, backgroundColor: colors.bg }}
         edges={["top", "left", "right"]}
       >
-        {loading ? (
+        {!welcomed ? (
+          <Welcome ready={!loading} onDone={() => setWelcomed(true)} />
+        ) : loading ? (
           <View
             style={{
               flex: 1,
@@ -69,9 +77,10 @@ export default function Layout() {
                 backgroundColor: "#FFFFFF",
                 borderTopColor: colors.line,
                 paddingTop: 9,
-                paddingBottom: 10,
-                height: 72,
+                paddingBottom: Math.max(insets.bottom, 10),
+                height: 62 + Math.max(insets.bottom, 10),
               },
+              tabBarHideOnKeyboard: true,
               tabBarLabelStyle: {
                 fontSize: 11,
                 fontWeight: "600",
@@ -139,6 +148,6 @@ export default function Layout() {
           </Tabs>
         )}
       </SafeAreaView>
-    </SafeAreaProvider>
+    </>
   );
 }

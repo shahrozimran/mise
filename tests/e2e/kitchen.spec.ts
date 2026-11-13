@@ -49,6 +49,7 @@ test.beforeEach(async ({ page }) => {
     },
   });
   await page.addInitScript((state) => {
+    if (window.top !== window) return;
     if (!localStorage.getItem("mise-state-v1"))
       localStorage.setItem("mise-state-v1", JSON.stringify(state));
   }, data);
