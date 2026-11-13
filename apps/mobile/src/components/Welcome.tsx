@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Animated, Platform, View, useWindowDimensions, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Button, colors, Txt } from "./ui";
+import { Button, useTheme, Txt } from "./ui";
 import { Enter, useReducedMotion } from "./motion";
 import { WelcomeScene } from "./WelcomeScene";
 
 export function Welcome({ready,onDone}:{ready:boolean;onDone:()=>void}) {
+  const { colors } = useTheme();
   const [elapsed,setElapsed]=useState(false);
   const [closing,setClosing]=useState(false);
   const [sceneReady,setSceneReady]=useState(false);

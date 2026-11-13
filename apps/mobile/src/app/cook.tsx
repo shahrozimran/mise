@@ -15,7 +15,7 @@ import {
   Button,
   Card,
   Chip,
-  colors,
+  useTheme,
   Eyebrow,
   Field,
   Icon,
@@ -23,7 +23,7 @@ import {
   Notice,
   Page,
   Row,
-  s,
+  useStyles,
   Sheet,
   Txt,
 } from "../components/ui";
@@ -43,6 +43,8 @@ export default function Kitchen() {
   return <KitchenEditor key={draftId} />;
 }
 function KitchenEditor() {
+  const { colors } = useTheme();
+  const s = useStyles();
   const {
     data,
     updateDraft,
@@ -294,10 +296,10 @@ function KitchenEditor() {
                     height: 40,
                     borderRadius: 12,
                     backgroundColor: [
-                      "#253745",
-                      "#253745",
-                      "#253745",
-                      "#253745",
+                      colors.pale,
+                      colors.pale,
+                      colors.pale,
+                      colors.pale,
                     ][index % 4],
                     alignItems: "center",
                     justifyContent: "center",
@@ -313,7 +315,7 @@ function KitchenEditor() {
                     }
                     size={18}
                     color={
-                      ["#9BA8AB", "#9BA8AB", "#9BA8AB", "#9BA8AB"][index % 4]
+                      [colors.muted, colors.muted, colors.muted, colors.muted][index % 4]
                     }
                   />
                 </View>
@@ -565,7 +567,7 @@ function KitchenEditor() {
             onPress={() => setExtraTools(!extraTools)}
           />
           {extraTools && (
-            <Card style={{ backgroundColor: "#253745" }}>
+            <Card style={{ backgroundColor: colors.pale }}>
               <Row>
                 <Icon name="sparkles-outline" color={colors.accent} />
                 <Txt style={{ fontWeight: "600", fontSize: 15 }}>

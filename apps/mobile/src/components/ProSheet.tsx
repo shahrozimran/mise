@@ -1,6 +1,6 @@
 import { Linking, View } from "react-native";
 import { buyPlan, restorePurchases, useBilling } from "../services/billing";
-import { Button, colors, Icon, Muted, Notice, Row, Sheet, Txt } from "./ui";
+import { Button, useTheme, Icon, Muted, Notice, Row, Sheet, Txt } from "./ui";
 
 export function ProSheet({
   visible,
@@ -9,6 +9,7 @@ export function ProSheet({
   visible: boolean;
   onClose: () => void;
 }) {
+  const { colors } = useTheme();
   const { plans, configured, busy, error, pro, preview } = useBilling();
   return (
     <Sheet
@@ -51,7 +52,7 @@ export function ProSheet({
             <Icon name={icon as "book-outline"} color={colors.secondary} size={23} />
             <View style={{ flex: 1, gap: 4 }}>
               <Txt style={{ color: colors.ink, fontWeight: "600" }}>{title}</Txt>
-              <Txt style={{ color: "#9BA8AB", fontSize: 12, lineHeight: 18 }}>
+              <Txt style={{ color: colors.muted, fontSize: 12, lineHeight: 18 }}>
                 {detail}
               </Txt>
             </View>

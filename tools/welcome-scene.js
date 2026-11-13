@@ -41,9 +41,22 @@ try {
   inner.rotation.x=-.5;
   const core=mesh(new THREE.SphereGeometry(.18,24,16),0x4A5C6A,0,0,0);
   core.material.metalness=.5;
+  const appearance=matchMedia('(prefers-color-scheme: dark)');
+  function applyTheme(mode) {
+    const dark=mode==='dark';
+    document.body.style.backgroundColor=dark?'#0E0E0E':'#F8F6F1';
+    document.body.style.color=dark?'#EDEDED':'#252422';
+    outer.material.color.set(dark?0xEDEDED:0x775144);
+    inner.material.color.set(dark?0xA2A2A2:0xA99C8C);
+    core.material.color.set(dark?0x585858:0xBEA8A7);
+  }
+  window.miseTheme=applyTheme;
+  applyTheme(appearance.matches?'dark':'light');
+  const changeTheme=event=>applyTheme(event.matches?'dark':'light');
+  appearance.addEventListener('change',changeTheme);
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   let start=performance.now(), closing=false, closeAt=0, frame;
-  addEventListener('message',event=>{ if(event.data?.type==='close') {closing=true; closeAt=performance.now();} });
+  addEventListener('message',event=>{ if(event.data?.type==='close') {closing=true; closeAt=performance.now();} if(event.data?.type==='theme') applyTheme(event.data.mode); });
   window.miseClose=()=>{closing=true;closeAt=performance.now();};
   function draw(now) {
     const t=(now-start)/1000;
@@ -60,7 +73,7 @@ try {
   }
   frame=requestAnimationFrame(draw);
   document.addEventListener('visibilitychange',()=>{cancelAnimationFrame(frame);if(!document.hidden)frame=requestAnimationFrame(draw);});
-  addEventListener('pagehide',()=>{cancelAnimationFrame(frame);observer.disconnect();removeEventListener('resize',resize);scene.traverse(o=>{o.geometry?.dispose();o.material?.dispose();});renderer.dispose();});
+  addEventListener('pagehide',()=>{cancelAnimationFrame(frame);observer.disconnect();removeEventListener('resize',resize);appearance.removeEventListener('change',changeTheme);scene.traverse(o=>{o.geometry?.dispose();o.material?.dispose();});renderer.dispose();});
 } catch {
   // Static, offline fallback for devices without WebGL support.
   canvas.style.display='none'; document.querySelector('#fallback').style.display='grid';

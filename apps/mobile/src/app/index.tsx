@@ -23,7 +23,7 @@ import {
   Button,
   BrandMark,
   Card,
-  colors,
+  useTheme,
   Icon,
   Muted,
   Row,
@@ -33,9 +33,11 @@ import {
 import { Enter, TouchCard } from "../components/motion";
 import { MealPhoto } from "../components/MealPhoto";
 import { ConnectionStatus } from "../components/ConnectionStatus";
+import { SurfaceTexture } from "../components/SurfaceTexture";
 import { goalIcons, Onboarding } from "../components/Onboarding";
 
 export default function Home() {
+  const { colors } = useTheme();
   const data = useKitchen((s) => s.data)!;
   const preferences = data.preferences ?? defaultPreferences();
   const goal = goalOptions.find((g) => g.id === preferences.goal)!;
@@ -83,7 +85,7 @@ export default function Home() {
           accessibilityLabel="Edit preferences"
           onPress={() => setEditing(true)}
           style={{
-            backgroundColor: "#253745",
+            backgroundColor: colors.pale,
             width: 43,
             height: 43,
             borderRadius: 23,
@@ -125,6 +127,7 @@ export default function Home() {
       </Enter>
       <Enter delay={60} style={{ marginTop: 23 }}>
         <View
+          testID="meal-focus-card"
           style={{
             backgroundColor: colors.pale,
             borderRadius: 26,
@@ -134,6 +137,7 @@ export default function Home() {
             overflow: "hidden",
           }}
         >
+          <SurfaceTexture />
           <View style={{ flex: 1, gap: 13 }}>
             <Row style={{ gap: 7 }}>
               <Icon
@@ -158,7 +162,7 @@ export default function Home() {
             </Txt>
             <Txt
               style={{
-                color: "#9BA8AB",
+                color: colors.muted,
                 fontSize: 13,
                 lineHeight: 20,
                 maxWidth: 390,
@@ -173,7 +177,7 @@ export default function Home() {
             >
               <Txt
                 style={{
-                  color: "#CCD0CF",
+                  color: colors.ink,
                   textDecorationLine: "underline",
                   fontSize: 12,
                   marginTop: 2,
@@ -210,7 +214,7 @@ export default function Home() {
             <Card style={{ padding: 19, height: "100%", gap: 13 }}>
               <View
                 style={{
-                  backgroundColor: "#253745",
+                  backgroundColor: colors.pale,
                   borderRadius: 13,
                   padding: 10,
                   alignSelf: "flex-start",
@@ -233,7 +237,7 @@ export default function Home() {
             <Card style={{ padding: 19, height: "100%", gap: 13 }}>
               <View
                 style={{
-                  backgroundColor: "#253745",
+                  backgroundColor: colors.pale,
                   borderRadius: 13,
                   padding: 10,
                   alignSelf: "flex-start",
@@ -486,6 +490,7 @@ export default function Home() {
 }
 
 function HomeScroll({ children }: React.PropsWithChildren) {
+  const { colors } = useTheme();
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: colors.bg }}

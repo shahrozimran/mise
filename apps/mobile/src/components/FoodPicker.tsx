@@ -17,7 +17,7 @@ import { useOffline } from "./ConnectionStatus";
 import {
   Button,
   Chip,
-  colors,
+  useTheme,
   Field,
   Icon,
   Muted,
@@ -46,6 +46,7 @@ export function FoodPicker({
   initialQuantity?: number | string;
   initialMeasureId?: string;
 }) {
+  const { colors } = useTheme();
   const data = useKitchen((s) => s.data)!;
   const offline = useOffline();
   const [query, setQuery] = useState(initialQuery);

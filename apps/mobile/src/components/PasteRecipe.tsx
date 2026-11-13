@@ -10,7 +10,7 @@ import { foods } from "../data/catalog";
 import { id, useKitchen } from "../data/store";
 import {
   Button,
-  colors,
+  useTheme,
   Field,
   Icon,
   Muted,
@@ -30,6 +30,7 @@ export function PasteRecipe({
   onClose: () => void;
   onDone: (message: string) => void;
 }) {
+  const { colors } = useTheme();
   const data = useKitchen((s) => s.data)!;
   const [text, setText] = useState("");
   const [rows, setRows] = useState<ParsedLine[]>([]);

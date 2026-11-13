@@ -4,18 +4,19 @@ import { Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useKitchen } from "../data/store";
-import { colors, Icon, Notice, Txt, Button } from "../components/ui";
+import { useTheme, Icon, Notice, Txt, Button } from "../components/ui";
 import { initializeBilling, refreshEntitlement } from "../services/billing";
 import { Onboarding } from "../components/Onboarding";
 import { Welcome } from "../components/Welcome";
 import * as SystemUI from "expo-system-ui";
-
-void SystemUI.setBackgroundColorAsync(colors.bg).catch(() => {});
+import { ThemeProvider } from "../components/theme";
 
 export default function Layout() {
-  return <SafeAreaProvider><KitchenLayout /></SafeAreaProvider>;
+  return <ThemeProvider><SafeAreaProvider><KitchenLayout /></SafeAreaProvider></ThemeProvider>;
 }
 function KitchenLayout() {
+  const { colors, mode } = useTheme();
+  useEffect(() => { void SystemUI.setBackgroundColorAsync(colors.bg).catch(() => {}); }, [colors.bg]);
   const insets = useSafeAreaInsets();
   const [welcomed, setWelcomed] = useState(false);
   const { data, loading, error, hydrate } = useKitchen();
@@ -38,7 +39,7 @@ function KitchenLayout() {
   }, [hydrate]);
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar style={mode === "dark" ? "light" : "dark"} />
       <SafeAreaView
         style={{ flex: 1, backgroundColor: colors.bg }}
         edges={["top", "left", "right"]}
@@ -75,7 +76,7 @@ function KitchenLayout() {
             screenOptions={{
               headerShown: false,
               tabBarActiveTintColor: colors.accent,
-              tabBarInactiveTintColor: "#9BA8AB",
+              tabBarInactiveTintColor: colors.muted,
               tabBarStyle: {
                 backgroundColor: colors.paper,
                 borderTopColor: colors.line,

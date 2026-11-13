@@ -59,7 +59,7 @@ The preview profile creates an installable APK. Production uses real Play entitl
 - Barcode scanner, manual barcode input, cached product lookup, and an optional exact-match USDA proxy.
 - Online barcode and packaged-food search through Open Food Facts works without a configured server. Confirm the community label values before use; only records with an explicit 100 g nutrition basis are accepted. Successful lookups and manual barcode labels are cached on the device for offline reuse. Unlisted products and liquids without gram weights can be entered manually.
 - A bundled monochrome Three.js welcome scene, responsive keyboard-aware sheets, live connection status, and Android navigation safe-area spacing.
-- A navy/slate theme using the supplied six-color palette, typographic branding, and nine bundled editorial meal photos. Asset provenance and prompts are in `apps/mobile/assets/food/PHOTOGRAPHY.md`.
+- Automatic system-matched light/dark themes: off-white, charcoal, and subtle beige in light mode; the supplied visible grayscale palette in dark mode. Typographic branding and nine bundled editorial meal photos remain. Asset provenance and prompts are in `apps/mobile/assets/food/PHOTOGRAPHY.md`.
 - Pro grocery aggregation with recipe multipliers, persisted list snapshots/checks, and pantry subtraction.
 - Pro uniform calorie scaling that preserves ingredient proportions and clears old measured yield.
 - Local PDF macro cards on Android; printable/save-to-PDF cards in the browser.

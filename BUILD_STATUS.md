@@ -2,9 +2,15 @@
 
 Verified on 13 November 2026.
 
+## 0.5.0 system light and dark appearance
+
+The app follows device appearance automatically. Light mode uses off-white/charcoal with a subtle beige paper texture; dark mode matches the visible grayscale swatches in the latest reference. The image's printed brown/pink hex labels conflict with those swatches, so the visual colors were used. See `DESIGN_SYSTEM.md` and `apps/mobile/assets/TEXTURE.md` for implementation and asset details.
+
+Local validation passed: workspace types/lint, 75 domain/API tests, 15 browser workflows, 20/20 Expo Doctor checks, and Android Hermes export. Tests verified in-place light/dark switching while a search dialog is open, preservation of the draft and entered text, Settings updates/reload, and dark welcome rendering. Phone screenshots for both modes were reviewed. Native system appearance detection requires installing the new binary; previous 0.4.0 builds forced dark mode. Native-device testing remains outstanding.
+
 ## 0.4.0 visual refresh
 
-The supplied navy/slate palette, typography, photo assets, and removal of custom SVG/food illustrations are documented in `DESIGN_SYSTEM.md`. Local validation passed: workspace types/lint, 75 domain/API tests, 13 browser workflows, 20/20 Expo Doctor checks, and Android Hermes export including all nine bundled photos. Phone and desktop captures were visually reviewed; the focused mobile/onboarding flows were rerun after system-theme integration. A new main push starts the native APK release build.
+The earlier navy/slate palette, typography, photo assets, and removal of custom SVG/food illustrations were validated locally with workspace types/lint, 75 domain/API tests, 13 browser workflows, 20/20 Expo Doctor checks, and Android Hermes export including all nine bundled photos. Native compilation and publication succeeded as `v0.4.0-build.6`. Version 0.5.0 supersedes its forced-dark palette.
 
 ## 0.3.0 mobile fixes
 

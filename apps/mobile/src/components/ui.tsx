@@ -18,10 +18,11 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ConnectionStatus } from "./ConnectionStatus";
 
-import { colors } from "./theme";
-export { colors } from "./theme";
+import { useTheme, themes, ThemeColors } from "./theme";
+export { useTheme } from "./theme";
 export type IconName = React.ComponentProps<typeof Ionicons>["name"];
 export function BrandMark() {
+  const { colors } = useTheme();
   return <View accessible={false} style={{width:38,height:38,borderRadius:10,borderWidth:1,borderColor:colors.soft,backgroundColor:colors.paper,alignItems:"center",justifyContent:"center"}}>
     <Txt style={{fontSize:23,fontWeight:"600",letterSpacing:-2,color:colors.ink}}>m.</Txt>
   </View>;
@@ -29,19 +30,21 @@ export function BrandMark() {
 export function Icon({
   name,
   size = 20,
-  color = colors.ink,
+  color,
 }: {
   name: IconName;
   size?: number;
   color?: React.ComponentProps<typeof Ionicons>["color"];
 }) {
-  return <Ionicons name={name} size={size} color={color} />;
+  const { colors } = useTheme();
+  return <Ionicons name={name} size={size} color={color ?? colors.ink} />;
 }
 export function Txt({
   children,
   style,
   ...rest
 }: React.ComponentProps<typeof Text>) {
+  const s = useStyles();
   return (
     <Text {...rest} style={[s.text, style]}>
       {children}
@@ -49,24 +52,29 @@ export function Txt({
   );
 }
 export function Eyebrow({ children }: PropsWithChildren) {
+  const s = useStyles();
   return <Txt style={s.eyebrow}>{children}</Txt>;
 }
 export function Heading({ children }: PropsWithChildren) {
+  const s = useStyles();
   return <Txt style={s.heading}>{children}</Txt>;
 }
 export function Muted({ children }: PropsWithChildren) {
+  const s = useStyles();
   return <Txt style={s.muted}>{children}</Txt>;
 }
 export function Card({
   children,
   style,
 }: PropsWithChildren<{ style?: ViewStyle }>) {
+  const s = useStyles();
   return <View style={[s.card, style]}>{children}</View>;
 }
 export function Row({
   children,
   style,
 }: PropsWithChildren<{ style?: ViewStyle }>) {
+  const s = useStyles();
   return <View style={[s.row, style]}>{children}</View>;
 }
 export function Button({
@@ -88,6 +96,8 @@ export function Button({
   small?: boolean;
   testID?: string;
 }) {
+  const { colors } = useTheme();
+  const s = useStyles();
   const dark = variant === "primary";
   return (
     <Pressable
@@ -101,7 +111,7 @@ export function Button({
         small && { minHeight: 40, paddingHorizontal: 14 },
         variant === "primary" && { backgroundColor: colors.accent },
         variant === "secondary" && { backgroundColor: colors.pale },
-        variant === "danger" && { backgroundColor: "#253745" },
+        variant === "danger" && { backgroundColor: colors.pale },
         (disabled || loading) && { opacity: 0.45 },
         pressed && { opacity: 0.75 },
       ]}
@@ -138,13 +148,15 @@ export function Field({
   error,
   ...props
 }: TextInputProps & { label: string; error?: string }) {
+  const { colors } = useTheme();
+  const s = useStyles();
   return (
     <View style={{ gap: 7, flex: 1 }}>
       <Txt style={s.label}>{label}</Txt>
       <TextInput
         accessibilityLabel={label}
         selectionColor={colors.accent}
-        placeholderTextColor="#9BA8AB"
+        placeholderTextColor={colors.muted}
         {...props}
         style={[
           s.input,
@@ -167,6 +179,8 @@ export function Chip({
   active?: boolean;
   onPress?: () => void;
 }) {
+  const { colors } = useTheme();
+  const s = useStyles();
   return (
     <Pressable
       accessibilityRole={onPress ? "button" : undefined}
@@ -192,11 +206,12 @@ export function Notice({
   children,
   error = false,
 }: PropsWithChildren<{ error?: boolean }>) {
+  const { colors } = useTheme();
   return (
     <View
       accessibilityRole={error ? "alert" : undefined}
       style={{
-        backgroundColor: error ? "#253745" : colors.pale,
+        backgroundColor: error ? colors.pale : colors.pale,
         padding: 14,
         borderRadius: 12,
       }}
@@ -219,8 +234,11 @@ export function Page({
   subtitle,
   action,
 }: PropsWithChildren<{ title: string; subtitle: string; action?: ReactNode }>) {
+  const { colors } = useTheme();
+  const s = useStyles();
   return (
     <ScrollView
+      testID="page-surface"
       style={{ flex: 1, backgroundColor: colors.bg }}
       contentContainerStyle={{ paddingBottom: 36 }}
       keyboardShouldPersistTaps="handled"
@@ -265,6 +283,7 @@ export function Sheet({
   subtitle?: string;
   onClose: () => void;
 }>) {
+  const s = useStyles();
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const [keyboardTop, setKeyboardTop] = useState<number | null>(null);
@@ -284,7 +303,7 @@ export function Sheet({
       onRequestClose={onClose}
     >
       <View style={[s.overlay, { paddingTop: insets.top + 8, paddingBottom: keyboardOverlap }]}>
-        <View style={[s.sheet, { paddingBottom: keyboardTop === null ? Math.max(insets.bottom, 20) : 12 }]}>
+        <View testID="sheet-surface" style={[s.sheet, { paddingBottom: keyboardTop === null ? Math.max(insets.bottom, 20) : 12 }]}>
           <Row style={{ justifyContent: "space-between", marginBottom: 8 }}>
             <Txt style={{ fontSize: 23, fontWeight: "600", flex: 1 }}>
               {title}
@@ -314,7 +333,7 @@ export function Sheet({
     </Modal>
   );
 }
-export const s = StyleSheet.create({
+function createUIStyles(colors: ThemeColors) { return StyleSheet.create({
   text: {
     color: colors.ink,
     fontSize: 14,
@@ -350,7 +369,7 @@ export const s = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: "#9BA8AB" },
+  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.muted },
   card: {
     backgroundColor: colors.paper,
     borderRadius: 20,
@@ -370,14 +389,14 @@ export const s = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  label: { fontSize: 12, fontWeight: "600", color: "#9BA8AB" },
+  label: { fontSize: 12, fontWeight: "600", color: colors.muted },
   input: {
     minHeight: 48,
     padding: 13,
     borderWidth: 1,
     borderColor: colors.soft,
     borderRadius: 11,
-    backgroundColor: "#06141B",
+    backgroundColor: colors.bg,
     color: colors.ink,
     fontSize: 15,
   },
@@ -398,7 +417,7 @@ export const s = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(6,20,27,0.78)",
+    backgroundColor: colors.bg === themes.dark.bg ? "rgba(0,0,0,0.72)" : "rgba(37,36,34,0.28)",
     justifyContent: "flex-end",
     alignItems: "center",
   },
@@ -414,9 +433,12 @@ export const s = StyleSheet.create({
     height: "94%",
   },
   footer: {
-    color: "#9BA8AB",
+    color: colors.muted,
     fontSize: 11,
     textAlign: "center",
     marginTop: 32,
   },
 });
+}
+const styles = { light: createUIStyles(themes.light), dark: createUIStyles(themes.dark) };
+export function useStyles() { const { mode } = useTheme(); return styles[mode]; }

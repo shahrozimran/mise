@@ -7,7 +7,7 @@ import { useBilling } from "../services/billing";
 import {
   Button,
   Card,
-  colors,
+  useTheme,
   Eyebrow,
   Field,
   Icon,
@@ -45,6 +45,7 @@ function Pantry({ foodId, grams }: { foodId: string; grams: number }) {
   );
 }
 export default function Grocery() {
+  const { colors } = useTheme();
   const data = useKitchen((s) => s.data)!;
   const pro = useBilling((s) => s.pro || s.preview);
   const [paywall, setPaywall] = useState(false);

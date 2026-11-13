@@ -13,7 +13,7 @@ import {
   Button,
   Card,
   Chip,
-  colors,
+  useTheme,
   Eyebrow,
   Field,
   Icon,
@@ -28,6 +28,7 @@ import { Macros, MiniMacros } from "../components/Macros";
 import { useBilling } from "../services/billing";
 
 export default function Recipes() {
+  const { colors } = useTheme();
   const { data, loadRecipe, deleteRecipe } = useKitchen();
   const [query, setQuery] = useState("");
   const [mode, setMode] = useState<"recipes" | "batches">("recipes");
@@ -109,7 +110,7 @@ export default function Recipes() {
                   <Row style={{ justifyContent: "space-between" }}>
                     <View
                       style={{
-                        backgroundColor: index % 2 ? "#253745" : colors.pale,
+                        backgroundColor: index % 2 ? colors.pale : colors.pale,
                         padding: 14,
                         borderRadius: 16,
                       }}

@@ -11,7 +11,7 @@ import {
   Button,
   Card,
   Chip,
-  colors,
+  useTheme,
   Eyebrow,
   Field,
   Muted,
@@ -24,6 +24,7 @@ import {
 import { ProSheet } from "../components/ProSheet";
 
 export default function Settings() {
+  const {mode, colors}=useTheme();
   const { data, commit, replaceData } = useKitchen();
   const billing = useBilling();
   const [proSheet, setProSheet] = useState(false);
@@ -66,6 +67,11 @@ export default function Settings() {
         </View>
       )}
       <View style={{ gap: 20 }}>
+        <Card>
+          <Eyebrow>APPEARANCE</Eyebrow>
+          <Txt style={{fontSize:20,fontWeight:"600"}}>Follows your phone</Txt>
+          <Muted>{mode === "dark" ? "Dark mode" : "Light mode"} is active. Mise switches automatically when your system appearance changes.</Muted>
+        </Card>
         <Card>
           <Eyebrow>MADE FOR YOU</Eyebrow>
           <Txt style={{ fontSize: 22, fontWeight: "600" }}>

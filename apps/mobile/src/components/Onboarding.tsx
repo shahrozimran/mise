@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   Pressable,
   ScrollView,
@@ -15,7 +15,7 @@ import {
   Preferences,
 } from "@mise/domain";
 import { useKitchen } from "../data/store";
-import { BrandMark, Button, colors, Field, Icon, IconName, Muted, Row, Txt } from "./ui";
+import { BrandMark, Button, useTheme, Field, Icon, IconName, Muted, Row, Txt } from "./ui";
 import { Enter, TouchCard } from "./motion";
 import { MealPhoto } from "./MealPhoto";
 
@@ -48,6 +48,8 @@ export function Onboarding({
   editing?: boolean;
   onClose?: () => void;
 }) {
+  const { colors } = useTheme();
+  const o = useMemo(() => createOnboardingStyles(colors), [colors]);
   const data = useKitchen((s) => s.data)!;
   const [step, setStep] = useState(editing ? 0 : data.onboardingStep);
   const [preferences, setPreferences] = useState<Preferences>(
@@ -161,7 +163,7 @@ export function Onboarding({
                     height: 5,
                     borderRadius: 4,
                     flex: 1,
-                    backgroundColor: index <= step ? colors.accent : "#253745",
+                    backgroundColor: index <= step ? colors.accent : colors.pale,
                   }}
                 />
               ))}
@@ -196,7 +198,7 @@ export function Onboarding({
                         <View
                           style={[
                             o.optionIcon,
-                            { backgroundColor: option.color },
+                            { backgroundColor: colors.pale },
                           ]}
                         >
                           <Icon name={goalIcons[option.id]} size={25} />
@@ -214,7 +216,7 @@ export function Onboarding({
                           color={
                             preferences.goal === option.id
                               ? colors.accent
-                              : "#4A5C6A"
+                              : colors.soft
                           }
                           size={22}
                         />
@@ -244,10 +246,10 @@ export function Onboarding({
                             o.optionIcon,
                             {
                               backgroundColor: [
-                                "#253745",
-                                "#253745",
-                                "#253745",
-                                "#253745",
+                                colors.pale,
+                                colors.pale,
+                                colors.pale,
+                                colors.pale,
                               ][index],
                             },
                           ]}
@@ -279,7 +281,7 @@ export function Onboarding({
                           color={
                             preferences.diet === option.id
                               ? colors.accent
-                              : "#4A5C6A"
+                              : colors.soft
                           }
                           size={22}
                         />
@@ -462,7 +464,7 @@ export function Onboarding({
                   <View
                     style={{
                       alignItems: "center",
-                      backgroundColor: "#253745",
+                      backgroundColor: colors.pale,
                       borderRadius: 24,
                       padding: 20,
                     }}
@@ -571,7 +573,7 @@ export function Onboarding({
     </View>
   );
 }
-const o = StyleSheet.create({
+function createOnboardingStyles(colors: import("./theme").ThemeColors) { return StyleSheet.create({
   top: {
     width: "100%",
     maxWidth: 1120,
@@ -613,7 +615,7 @@ const o = StyleSheet.create({
     marginBottom: 9,
   },
   description: {
-    color: "#9BA8AB",
+    color: colors.muted,
     fontSize: 14,
     lineHeight: 22,
     marginBottom: 23,
@@ -632,10 +634,10 @@ const o = StyleSheet.create({
     gap: 13,
     borderRadius: 18,
     backgroundColor: colors.paper,
-    borderColor: "#253745",
+    borderColor: colors.pale,
     borderWidth: 2,
   },
-  selected: { borderColor: colors.accent, backgroundColor: "#253745" },
+  selected: { borderColor: colors.accent, backgroundColor: colors.pale },
   optionIcon: {
     width: 48,
     height: 48,
@@ -644,7 +646,7 @@ const o = StyleSheet.create({
     justifyContent: "center",
   },
   optionTitle: { fontSize: 16, fontWeight: "600", color: colors.ink },
-  optionDetail: { fontSize: 12, lineHeight: 18, color: "#9BA8AB" },
+  optionDetail: { fontSize: 12, lineHeight: 18, color: colors.muted },
   avoid: {
     flexDirection: "row",
     alignItems: "center",
@@ -652,7 +654,7 @@ const o = StyleSheet.create({
     padding: 14,
     borderRadius: 14,
     borderWidth: 2,
-    borderColor: "#253745",
+    borderColor: colors.pale,
     backgroundColor: colors.paper,
   },
   smallOption: {
@@ -661,7 +663,7 @@ const o = StyleSheet.create({
     paddingVertical: 18,
     borderRadius: 16,
     borderWidth: 2,
-    borderColor: "#253745",
+    borderColor: colors.pale,
     backgroundColor: colors.paper,
   },
   counter: {
@@ -675,7 +677,8 @@ const o = StyleSheet.create({
   footer: {
     padding: 22,
     borderTopWidth: 1,
-    borderTopColor: "#253745",
+    borderTopColor: colors.pale,
     backgroundColor: colors.bg,
   },
 });
+}

@@ -1,13 +1,7 @@
 import { View } from "react-native";
 import { formatNumber, Nutrients } from "@mise/domain";
-import { colors, Icon, Row, Txt } from "./ui";
+import { useTheme, Icon, Row, Txt } from "./ui";
 
-const macroConfig = [
-  ["protein", "Protein", colors.coral],
-  ["carbs", "Carbs", colors.gold],
-  ["fat", "Fat", colors.blue],
-  ["fiber", "Fiber", "#9BA8AB"],
-] as const;
 export function Macros({
   nutrients,
   label = "WHOLE RECIPE",
@@ -17,7 +11,14 @@ export function Macros({
   label?: string;
   dark?: boolean;
 }) {
-  const ink = dark ? "#CCD0CF" : colors.ink;
+  const { colors } = useTheme();
+const macroConfig = [
+  ["protein", "Protein", colors.coral],
+  ["carbs", "Carbs", colors.gold],
+  ["fat", "Fat", colors.blue],
+  ["fiber", "Fiber", colors.muted],
+] as const;
+  const ink = dark ? colors.ink : colors.ink;
   return (
     <View
       style={{
@@ -32,7 +33,7 @@ export function Macros({
           style={{
             fontSize: 10,
             letterSpacing: 1.8,
-            color: dark ? "#9BA8AB" : colors.accent,
+            color: dark ? colors.muted : colors.accent,
             fontWeight: "600",
           }}
         >
@@ -56,12 +57,12 @@ export function Macros({
         >
           {formatNumber(nutrients.kcal, 0)}
         </Txt>
-        <Txt style={{ color: dark ? "#9BA8AB" : colors.muted, fontSize: 14 }}>
+        <Txt style={{ color: dark ? colors.muted : colors.muted, fontSize: 14 }}>
           kcal
         </Txt>
       </Row>
       <View
-        style={{ height: 1, backgroundColor: dark ? "#4A5C6A" : "#4A5C6A" }}
+        style={{ height: 1, backgroundColor: dark ? colors.soft : colors.soft }}
       />
       <View style={{ gap: 15 }}>
         {macroConfig.map(([key, title, color]) => (
@@ -76,7 +77,7 @@ export function Macros({
                 }}
               />
               <Txt
-                style={{ color: dark ? "#CCD0CF" : colors.ink, fontSize: 13 }}
+                style={{ color: dark ? colors.ink : colors.ink, fontSize: 13 }}
               >
                 {title}
               </Txt>
@@ -84,7 +85,7 @@ export function Macros({
             <Txt style={{ color: ink, fontSize: 15, fontWeight: "600" }}>
               {formatNumber(nutrients[key])}
               <Txt
-                style={{ color: dark ? "#9BA8AB" : colors.muted, fontSize: 11 }}
+                style={{ color: dark ? colors.muted : colors.muted, fontSize: 11 }}
               >
                 {" "}
                 g
@@ -95,7 +96,7 @@ export function Macros({
       </View>
       <Txt
         style={{
-          color: dark ? "#9BA8AB" : colors.muted,
+          color: dark ? colors.muted : colors.muted,
           fontSize: 11,
           lineHeight: 17,
         }}
@@ -107,6 +108,7 @@ export function Macros({
   );
 }
 export function MiniMacros({ nutrients }: { nutrients: Nutrients }) {
+  const { colors } = useTheme();
   return (
     <Row style={{ flexWrap: "wrap", gap: 17 }}>
       <Txt style={{ fontWeight: "700", color: colors.accent }}>
