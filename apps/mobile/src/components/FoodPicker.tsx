@@ -111,7 +111,7 @@ export function FoodPicker({
           <Pressable onPress={() => setSelected(null)}>
             <Row>
               <Icon name="arrow-back" size={16} />
-              <Txt style={{ color: colors.green }}>Back to foods</Txt>
+              <Txt style={{ color: colors.accent }}>Back to foods</Txt>
             </Row>
           </Pressable>
           <View
@@ -286,7 +286,7 @@ export function FoodPicker({
               </View>
             )}
           </View>
-          {busy && <ActivityIndicator accessibilityLabel="Loading food details" color={colors.green} />}
+          {busy && <ActivityIndicator accessibilityLabel="Loading food details" color={colors.accent} />}
           <Muted>
             Check raw versus cooked before adding. Cup and spoon weights use{" "}
             {data.settings.convention === "us"

@@ -15,9 +15,9 @@ import {
   Preferences,
 } from "@mise/domain";
 import { useKitchen } from "../data/store";
-import { Button, colors, Field, Icon, IconName, Muted, Row, Txt } from "./ui";
+import { BrandMark, Button, colors, Field, Icon, IconName, Muted, Row, Txt } from "./ui";
 import { Enter, TouchCard } from "./motion";
-import { MealArt } from "./MealArt";
+import { MealPhoto } from "./MealPhoto";
 
 export const goalIcons: Record<Preferences["goal"], IconName> = {
   lose: "trending-down-outline",
@@ -95,9 +95,7 @@ export function Onboarding({
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <View style={o.top}>
         <Row style={{ gap: 8 }}>
-          <View style={o.mark}>
-            <Icon name="leaf" color={colors.lime} />
-          </View>
+          <BrandMark />
           <Txt style={{ fontSize: 29, fontWeight: "700", letterSpacing: -1.2 }}>
             mise.
           </Txt>
@@ -120,19 +118,19 @@ export function Onboarding({
           <View style={o.story}>
             <View style={o.storyPill}>
               <Icon name="sparkles-outline" size={15} />
-              <Txt style={{ fontSize: 12, color: colors.green }}>
+              <Txt style={{ fontSize: 12, color: colors.accent }}>
                 A LITTLE PREP. A BETTER DAY.
               </Txt>
             </View>
             <Txt style={o.storyTitle}>
-              Your kitchen.{"\n"}Your kind of{"\n"}healthy.
+              Your kitchen.{"\n"}Your routine.
             </Txt>
             <Muted>
               Meals you look forward to. Portions that make sense. A routine
               that feels like yours.
             </Muted>
             <Enter delay={100} style={{ alignItems: "center", marginTop: 25 }}>
-              <MealArt size={270} />
+              <MealPhoto size={290} height={220} />
             </Enter>
             <Row style={{ justifyContent: "center", marginTop: 10 }}>
               <Icon name="lock-closed-outline" size={13} color={colors.muted} />
@@ -163,7 +161,7 @@ export function Onboarding({
                     height: 5,
                     borderRadius: 4,
                     flex: 1,
-                    backgroundColor: index <= step ? colors.green : "#E3E7DA",
+                    backgroundColor: index <= step ? colors.accent : "#253745",
                   }}
                 />
               ))}
@@ -215,8 +213,8 @@ export function Onboarding({
                           }
                           color={
                             preferences.goal === option.id
-                              ? colors.green
-                              : "#D1D9CB"
+                              ? colors.accent
+                              : "#4A5C6A"
                           }
                           size={22}
                         />
@@ -246,10 +244,10 @@ export function Onboarding({
                             o.optionIcon,
                             {
                               backgroundColor: [
-                                "#F3E5D8",
-                                "#E2EDDC",
-                                "#E1E9DA",
-                                "#E0EBEF",
+                                "#253745",
+                                "#253745",
+                                "#253745",
+                                "#253745",
                               ][index],
                             },
                           ]}
@@ -280,8 +278,8 @@ export function Onboarding({
                           }
                           color={
                             preferences.diet === option.id
-                              ? colors.green
-                              : "#D1D9CB"
+                              ? colors.accent
+                              : "#4A5C6A"
                           }
                           size={22}
                         />
@@ -322,7 +320,7 @@ export function Onboarding({
                                   : "add-circle-outline"
                               }
                               size={19}
-                              color={colors.green}
+                              color={colors.accent}
                             />
                             <Txt style={{ fontSize: 14 }}>{item.title}</Txt>
                           </View>
@@ -395,7 +393,7 @@ export function Onboarding({
                     <Row
                       style={{
                         justifyContent: "center",
-                        backgroundColor: "white",
+                        backgroundColor: colors.paper,
                         borderRadius: 18,
                         padding: 14,
                         borderColor: colors.line,
@@ -464,12 +462,12 @@ export function Onboarding({
                   <View
                     style={{
                       alignItems: "center",
-                      backgroundColor: "#EAF0DF",
+                      backgroundColor: "#253745",
                       borderRadius: 24,
                       padding: 20,
                     }}
                   >
-                    <MealArt size={150} />
+                    <Icon name="checkmark-circle-outline" size={44} color={colors.accent} />
                     <Txt
                       style={{ fontSize: 23, fontWeight: "600", marginTop: 6 }}
                     >
@@ -496,7 +494,7 @@ export function Onboarding({
                     {preferences.allergens.length > 0 && (
                       <Txt
                         style={{
-                          color: colors.green,
+                          color: colors.accent,
                           marginTop: 9,
                           textAlign: "center",
                           fontSize: 12,
@@ -583,7 +581,7 @@ const o = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  mark: { padding: 9, borderRadius: 13, backgroundColor: colors.green },
+  mark: { padding: 9, borderRadius: 13, backgroundColor: colors.accent },
   body: {
     flex: 1,
     maxWidth: 1120,
@@ -599,8 +597,8 @@ const o = StyleSheet.create({
     marginBottom: 24,
   },
   storyTitle: {
-    fontSize: 57,
-    lineHeight: 65,
+    fontSize: 46,
+    lineHeight: 54,
     fontWeight: "500",
     letterSpacing: -2.5,
     marginBottom: 20,
@@ -615,7 +613,7 @@ const o = StyleSheet.create({
     marginBottom: 9,
   },
   description: {
-    color: "#71806F",
+    color: "#9BA8AB",
     fontSize: 14,
     lineHeight: 22,
     marginBottom: 23,
@@ -624,7 +622,7 @@ const o = StyleSheet.create({
     fontSize: 10,
     fontWeight: "700",
     letterSpacing: 1.4,
-    color: colors.green,
+    color: colors.accent,
   },
   option: {
     minHeight: 87,
@@ -633,11 +631,11 @@ const o = StyleSheet.create({
     alignItems: "center",
     gap: 13,
     borderRadius: 18,
-    backgroundColor: "white",
-    borderColor: "#E1E5DA",
+    backgroundColor: colors.paper,
+    borderColor: "#253745",
     borderWidth: 2,
   },
-  selected: { borderColor: colors.green, backgroundColor: "#F0F5E8" },
+  selected: { borderColor: colors.accent, backgroundColor: "#253745" },
   optionIcon: {
     width: 48,
     height: 48,
@@ -646,7 +644,7 @@ const o = StyleSheet.create({
     justifyContent: "center",
   },
   optionTitle: { fontSize: 16, fontWeight: "600", color: colors.ink },
-  optionDetail: { fontSize: 12, lineHeight: 18, color: "#74806F" },
+  optionDetail: { fontSize: 12, lineHeight: 18, color: "#9BA8AB" },
   avoid: {
     flexDirection: "row",
     alignItems: "center",
@@ -654,8 +652,8 @@ const o = StyleSheet.create({
     padding: 14,
     borderRadius: 14,
     borderWidth: 2,
-    borderColor: "#E1E5DA",
-    backgroundColor: "white",
+    borderColor: "#253745",
+    backgroundColor: colors.paper,
   },
   smallOption: {
     alignItems: "center",
@@ -663,8 +661,8 @@ const o = StyleSheet.create({
     paddingVertical: 18,
     borderRadius: 16,
     borderWidth: 2,
-    borderColor: "#E1E5DA",
-    backgroundColor: "white",
+    borderColor: "#253745",
+    backgroundColor: colors.paper,
   },
   counter: {
     width: 48,
@@ -677,7 +675,7 @@ const o = StyleSheet.create({
   footer: {
     padding: 22,
     borderTopWidth: 1,
-    borderTopColor: "#E6E8DD",
+    borderTopColor: "#253745",
     backgroundColor: colors.bg,
   },
 });

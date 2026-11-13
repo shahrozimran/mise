@@ -26,26 +26,21 @@ try {
   resize();
   camera.position.set(0, 3, 4.2);
   camera.lookAt(0, 0, 0);
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x627953, 3));
-  const light = new THREE.DirectionalLight(0xffffff, 4);
+  scene.add(new THREE.HemisphereLight(0xCCD0CF, 0x06141B, 3));
+  const light = new THREE.DirectionalLight(0xCCD0CF, 5);
   light.position.set(3, 5, 4); scene.add(light);
   const meal = new THREE.Group(); scene.add(meal);
   function mesh(geometry, color, x, y, z) {
-    const object = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color, roughness: .6}));
+    const object = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color, roughness: .28, metalness: .4}));
     object.position.set(x,y,z); meal.add(object); return object;
   }
-  mesh(new THREE.CylinderGeometry(1.35,1.2,.16,48), 0xfefdf3, 0,0,0);
-  mesh(new THREE.TorusGeometry(1.2,.065,12,48),0xe2e8d3,0,.12,0).rotation.x=Math.PI/2;
-  for(let i=0;i<7;i++) {
-    const leaf=mesh(new THREE.SphereGeometry(.37,16,12), i%2?0x5f985d:0x83b176,
-      -.55+Math.cos(i)*.3,.24,Math.sin(i)*.5);
-    leaf.scale.set(1,.35,.7); leaf.rotation.y=i;
-  }
-  for(let i=0;i<5;i++) mesh(new THREE.SphereGeometry(.17,16,12),0xd78565,.15+i*.18,.25,.35+Math.sin(i)*.2);
-  for(let i=0;i<3;i++) {
-    const cube=mesh(new THREE.BoxGeometry(.42,.22,.4),0xd9ae75,.4,.25,-.55+i*.25);
-    cube.rotation.y=i*.5;
-  }
+  // A restrained silver dial, replacing the old cartoon meal illustration.
+  const outer=mesh(new THREE.TorusGeometry(1.05,.055,20,96),0xCCD0CF,0,0,0);
+  outer.rotation.x=.5;
+  const inner=mesh(new THREE.TorusGeometry(.77,.028,16,80),0x9BA8AB,0,0,0);
+  inner.rotation.x=-.5;
+  const core=mesh(new THREE.SphereGeometry(.18,24,16),0x4A5C6A,0,0,0);
+  core.material.metalness=.5;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   let start=performance.now(), closing=false, closeAt=0, frame;
   addEventListener('message',event=>{ if(event.data?.type==='close') {closing=true; closeAt=performance.now();} });

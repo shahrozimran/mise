@@ -6,7 +6,7 @@ const macroConfig = [
   ["protein", "Protein", colors.coral],
   ["carbs", "Carbs", colors.gold],
   ["fat", "Fat", colors.blue],
-  ["fiber", "Fiber", "#90A870"],
+  ["fiber", "Fiber", "#9BA8AB"],
 ] as const;
 export function Macros({
   nutrients,
@@ -17,11 +17,11 @@ export function Macros({
   label?: string;
   dark?: boolean;
 }) {
-  const ink = dark ? "#FFFFFF" : colors.ink;
+  const ink = dark ? "#CCD0CF" : colors.ink;
   return (
     <View
       style={{
-        backgroundColor: dark ? colors.green : colors.pale,
+        backgroundColor: dark ? colors.pale : colors.paper,
         borderRadius: 20,
         padding: 25,
         gap: 21,
@@ -32,7 +32,7 @@ export function Macros({
           style={{
             fontSize: 10,
             letterSpacing: 1.8,
-            color: dark ? "#BED2BC" : colors.green,
+            color: dark ? "#9BA8AB" : colors.accent,
             fontWeight: "600",
           }}
         >
@@ -40,7 +40,7 @@ export function Macros({
         </Txt>
         <Icon
           name="nutrition-outline"
-          color={dark ? colors.lime : colors.green}
+          color={dark ? colors.secondary : colors.accent}
           size={22}
         />
       </Row>
@@ -56,12 +56,12 @@ export function Macros({
         >
           {formatNumber(nutrients.kcal, 0)}
         </Txt>
-        <Txt style={{ color: dark ? "#BED2BC" : colors.muted, fontSize: 14 }}>
+        <Txt style={{ color: dark ? "#9BA8AB" : colors.muted, fontSize: 14 }}>
           kcal
         </Txt>
       </Row>
       <View
-        style={{ height: 1, backgroundColor: dark ? "#416957" : "#D9E2D0" }}
+        style={{ height: 1, backgroundColor: dark ? "#4A5C6A" : "#4A5C6A" }}
       />
       <View style={{ gap: 15 }}>
         {macroConfig.map(([key, title, color]) => (
@@ -76,7 +76,7 @@ export function Macros({
                 }}
               />
               <Txt
-                style={{ color: dark ? "#DFE9DC" : colors.ink, fontSize: 13 }}
+                style={{ color: dark ? "#CCD0CF" : colors.ink, fontSize: 13 }}
               >
                 {title}
               </Txt>
@@ -84,7 +84,7 @@ export function Macros({
             <Txt style={{ color: ink, fontSize: 15, fontWeight: "600" }}>
               {formatNumber(nutrients[key])}
               <Txt
-                style={{ color: dark ? "#B4C9AF" : colors.muted, fontSize: 11 }}
+                style={{ color: dark ? "#9BA8AB" : colors.muted, fontSize: 11 }}
               >
                 {" "}
                 g
@@ -95,7 +95,7 @@ export function Macros({
       </View>
       <Txt
         style={{
-          color: dark ? "#B4C9AF" : colors.muted,
+          color: dark ? "#9BA8AB" : colors.muted,
           fontSize: 11,
           lineHeight: 17,
         }}
@@ -109,7 +109,7 @@ export function Macros({
 export function MiniMacros({ nutrients }: { nutrients: Nutrients }) {
   return (
     <Row style={{ flexWrap: "wrap", gap: 17 }}>
-      <Txt style={{ fontWeight: "700", color: colors.green }}>
+      <Txt style={{ fontWeight: "700", color: colors.accent }}>
         {formatNumber(nutrients.kcal, 0)} kcal
       </Txt>
       <Txt style={{ fontSize: 12, color: colors.muted }}>

@@ -84,7 +84,7 @@ export default function Recipes() {
           </View>
           {!list.length ? (
             <Card style={{ alignItems: "center", paddingVertical: 45 }}>
-              <Icon name="book-outline" size={35} color={colors.green} />
+              <Icon name="book-outline" size={35} color={colors.accent} />
               <Txt style={{ fontSize: 23, fontWeight: "500" }}>
                 {query
                   ? "No recipe by that name."
@@ -109,7 +109,7 @@ export default function Recipes() {
                   <Row style={{ justifyContent: "space-between" }}>
                     <View
                       style={{
-                        backgroundColor: index % 2 ? "#F2EBDD" : colors.pale,
+                        backgroundColor: index % 2 ? "#253745" : colors.pale,
                         padding: 14,
                         borderRadius: 16,
                       }}
@@ -117,7 +117,7 @@ export default function Recipes() {
                       <Icon
                         name={index % 2 ? "restaurant-outline" : "leaf-outline"}
                         size={27}
-                        color={colors.green}
+                        color={colors.accent}
                       />
                     </View>
                     <Pressable

@@ -8,6 +8,9 @@ import { colors, Icon, Notice, Txt, Button } from "../components/ui";
 import { initializeBilling, refreshEntitlement } from "../services/billing";
 import { Onboarding } from "../components/Onboarding";
 import { Welcome } from "../components/Welcome";
+import * as SystemUI from "expo-system-ui";
+
+void SystemUI.setBackgroundColorAsync(colors.bg).catch(() => {});
 
 export default function Layout() {
   return <SafeAreaProvider><KitchenLayout /></SafeAreaProvider>;
@@ -35,7 +38,7 @@ function KitchenLayout() {
   }, [hydrate]);
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
       <SafeAreaView
         style={{ flex: 1, backgroundColor: colors.bg }}
         edges={["top", "left", "right"]}
@@ -51,11 +54,11 @@ function KitchenLayout() {
               gap: 20,
             }}
           >
-            <Icon name="leaf" size={38} color={colors.green} />
+            <Icon name="leaf" size={38} color={colors.accent} />
             <Txt style={{ fontSize: 30, fontWeight: "600" }}>
               Your kitchen is opening.
             </Txt>
-            <ActivityIndicator color={colors.green} />
+            <ActivityIndicator color={colors.accent} />
           </View>
         ) : !data ? (
           <View style={{ padding: 24, gap: 20 }}>
@@ -71,10 +74,10 @@ function KitchenLayout() {
           <Tabs
             screenOptions={{
               headerShown: false,
-              tabBarActiveTintColor: colors.green,
-              tabBarInactiveTintColor: "#879084",
+              tabBarActiveTintColor: colors.accent,
+              tabBarInactiveTintColor: "#9BA8AB",
               tabBarStyle: {
-                backgroundColor: "#FFFFFF",
+                backgroundColor: colors.paper,
                 borderTopColor: colors.line,
                 paddingTop: 9,
                 paddingBottom: Math.max(insets.bottom, 10),
@@ -96,7 +99,7 @@ function KitchenLayout() {
                 tabBarIcon: ({ color }) => (
                   <Icon
                     name="restaurant-outline"
-                    color={typeof color === "string" ? color : colors.green}
+                    color={typeof color === "string" ? color : colors.accent}
                   />
                 ),
               }}
@@ -116,7 +119,7 @@ function KitchenLayout() {
                 tabBarIcon: ({ color }) => (
                   <Icon
                     name="book-outline"
-                    color={typeof color === "string" ? color : colors.green}
+                    color={typeof color === "string" ? color : colors.accent}
                   />
                 ),
               }}
@@ -128,7 +131,7 @@ function KitchenLayout() {
                 tabBarIcon: ({ color }) => (
                   <Icon
                     name="basket-outline"
-                    color={typeof color === "string" ? color : colors.green}
+                    color={typeof color === "string" ? color : colors.accent}
                   />
                 ),
               }}
@@ -140,7 +143,7 @@ function KitchenLayout() {
                 tabBarIcon: ({ color }) => (
                   <Icon
                     name="options-outline"
-                    color={typeof color === "string" ? color : colors.green}
+                    color={typeof color === "string" ? color : colors.accent}
                   />
                 ),
               }}

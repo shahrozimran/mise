@@ -29,11 +29,11 @@ export function Welcome({ready,onDone}:{ready:boolean;onDone:()=>void}) {
   },[closing,fade,onDone,reduced]);
   return <Animated.View style={{flex:1,opacity:fade,backgroundColor:colors.bg}}><ScrollView contentContainerStyle={{flexGrow:1,justifyContent:"center",padding:28,paddingBottom:28+insets.bottom,gap:22}}>
     <Enter>
-      <Txt style={{textAlign:"center",color:colors.green,fontWeight:"700",letterSpacing:3}}>A LITTLE PREP. A BETTER DAY.</Txt>
+      <Txt style={{textAlign:"center",color:colors.accent,fontWeight:"700",letterSpacing:3}}>A LITTLE PREP. A BETTER DAY.</Txt>
       <View style={{height:Math.min(260,height*.29),borderRadius:120,overflow:"hidden",marginVertical:26}}><WelcomeScene closing={closing} onReady={handleSceneReady}/></View>
       <Txt accessibilityRole="header" style={{fontSize:40,fontWeight:"600",textAlign:"center",letterSpacing:-1.2}}>Welcome to Mise</Txt>
       <Txt style={{color:colors.muted,fontSize:16,lineHeight:25,textAlign:"center",marginTop:14}}>Good food. Clear portions.{"\n"}A kitchen that feels like yours.</Txt>
     </Enter>
-    {ready ? <Button label="Enter my kitchen" onPress={()=>setClosing(true)} /> : <View style={{gap:12,alignItems:"center"}}><ActivityIndicator color={colors.green}/><Txt>Getting your kitchen ready…</Txt></View>}
+    {ready ? <Button label="Enter my kitchen" onPress={()=>setClosing(true)} /> : <View style={{gap:12,alignItems:"center"}}><ActivityIndicator color={colors.accent}/><Txt>Getting your kitchen ready…</Txt></View>}
   </ScrollView></Animated.View>;
 }

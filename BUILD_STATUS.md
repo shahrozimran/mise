@@ -2,11 +2,15 @@
 
 Verified on 13 November 2026.
 
+## 0.4.0 visual refresh
+
+The supplied navy/slate palette, typography, photo assets, and removal of custom SVG/food illustrations are documented in `DESIGN_SYSTEM.md`. Local validation passed: workspace types/lint, 75 domain/API tests, 13 browser workflows, 20/20 Expo Doctor checks, and Android Hermes export including all nine bundled photos. Phone and desktop captures were visually reviewed; the focused mobile/onboarding flows were rerun after system-theme integration. A new main push starts the native APK release build.
+
 ## 0.3.0 mobile fixes
 
 The new Three.js welcome, Android bottom insets, keyboard-aware sheets, connection status, and public product lookup are documented in `MOBILE_FIXES.md`. Workspace type checks/lint, 75 domain/API tests, 13 browser workflows, 20/20 Expo Doctor checks, and Android Hermes export passed locally. The focused welcome/short-screen and barcode/offline flows were rerun after visual fixes. Live Open Food Facts lookup succeeded; the screenshot's barcode has no usable name/nutrition in its upstream record.
 
-The push to main starts the native APK build and release workflow. See GitHub Actions/Releases for its outcome and generated build suffix. The artifact details below describe the earlier local 0.2.0 build, not a native-device verification of 0.3.0. No Android device was connected for testing the reported Samsung keyboard/navigation behavior.
+The 0.3.0 native build and publication succeeded as `v0.3.0-build.5` on GitHub, including signature/checksum and native-library alignment checks. The artifact details below describe the earlier local 0.2.0 build, not a native-device verification of 0.3.0 or 0.4.0. No Android device was connected for testing the reported Samsung keyboard/navigation behavior.
 
 ## Delivered artifacts
 

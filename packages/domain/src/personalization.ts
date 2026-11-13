@@ -12,31 +12,31 @@ export const goalOptions: {
     id: "lose",
     title: "Lose weight",
     detail: "Explore filling meals with plenty of vegetables.",
-    color: "#F4DDD4",
+    color: "#253745",
   },
   {
     id: "gain",
     title: "Gain weight",
     detail: "Find hearty meals and easy energy-rich options.",
-    color: "#E8E0F5",
+    color: "#253745",
   },
   {
     id: "muscle",
     title: "Build muscle",
     detail: "Put protein-rich meal ideas within easy reach.",
-    color: "#E0E9F4",
+    color: "#253745",
   },
   {
     id: "balanced",
     title: "Eat more balanced",
     detail: "Enjoy a little more variety on your plate.",
-    color: "#E0EDDC",
+    color: "#253745",
   },
   {
     id: "prep",
     title: "Make cooking easier",
     detail: "Simple recipes. Fewer last-minute decisions.",
-    color: "#F4EBCF",
+    color: "#253745",
   },
 ];
 export const dietOptions: { id: Diet; title: string; detail: string }[] = [

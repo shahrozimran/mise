@@ -31,7 +31,7 @@ npx expo run:android
 
 Use an emulator or connected Android device. This app includes a native billing module, so use a development build rather than Expo Go. Generated `android/` and `ios/` directories are ignored; change native configuration through `app.json` and config plugins.
 
-From the repository root, `npm run prebuild:android` regenerates the correct mobile project. A local config plugin sets a Windows-safe CMake object-path limit and uses a short generated cache at `<workspace-drive>:\.mise-cxx\<project-hash>\` for native build files, without editing `node_modules` or moving source files. Launcher PNGs are generated from the checked-in SVG using `node tools/render-icon.cjs`.
+From the repository root, `npm run prebuild:android` regenerates the correct mobile project. A local config plugin sets a Windows-safe CMake object-path limit and uses a short generated cache at `<workspace-drive>:\.mise-cxx\<project-hash>\` for native build files, without editing `node_modules` or moving source files. Launcher PNGs use a typographic monogram; regenerate with Pillow using `python tools/render-icon.py [path/to/font.ttf]`. No custom SVG illustrations are used.
 
 Cloud build profiles are in `apps/mobile/eas.json`:
 
@@ -58,7 +58,8 @@ The preview profile creates an installable APK. Production uses real Play entitl
 - Three free recipe slots, an autosaved working draft, copies, and immutable cooked-batch snapshots.
 - Barcode scanner, manual barcode input, cached product lookup, and an optional exact-match USDA proxy.
 - Online barcode and packaged-food search through Open Food Facts works without a configured server. Confirm the community label values before use; only records with an explicit 100 g nutrition basis are accepted. Successful lookups and manual barcode labels are cached on the device for offline reuse. Unlisted products and liquids without gram weights can be entered manually.
-- A bundled Three.js welcome scene, responsive keyboard-aware sheets, live connection status, and Android navigation safe-area spacing.
+- A bundled monochrome Three.js welcome scene, responsive keyboard-aware sheets, live connection status, and Android navigation safe-area spacing.
+- A navy/slate theme using the supplied six-color palette, typographic branding, and nine bundled editorial meal photos. Asset provenance and prompts are in `apps/mobile/assets/food/PHOTOGRAPHY.md`.
 - Pro grocery aggregation with recipe multipliers, persisted list snapshots/checks, and pantry subtraction.
 - Pro uniform calorie scaling that preserves ingredient proportions and clears old measured yield.
 - Local PDF macro cards on Android; printable/save-to-PDF cards in the browser.

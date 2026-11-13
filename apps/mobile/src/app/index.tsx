@@ -21,6 +21,7 @@ import { foods } from "../data/catalog";
 import { blankRecipe, id, useKitchen } from "../data/store";
 import {
   Button,
+  BrandMark,
   Card,
   colors,
   Icon,
@@ -30,7 +31,7 @@ import {
   Txt,
 } from "../components/ui";
 import { Enter, TouchCard } from "../components/motion";
-import { MealArt } from "../components/MealArt";
+import { MealPhoto } from "../components/MealPhoto";
 import { ConnectionStatus } from "../components/ConnectionStatus";
 import { goalIcons, Onboarding } from "../components/Onboarding";
 
@@ -72,15 +73,7 @@ export default function Home() {
     <HomeScroll>
       <Row style={{ justifyContent: "space-between", marginBottom: 31 }}>
         <Row style={{ gap: 8 }}>
-          <View
-            style={{
-              padding: 9,
-              borderRadius: 13,
-              backgroundColor: colors.green,
-            }}
-          >
-            <Icon name="leaf" color={colors.lime} />
-          </View>
+          <BrandMark />
           <Txt style={{ fontSize: 31, fontWeight: "700", letterSpacing: -1.2 }}>
             mise.
           </Txt>
@@ -90,7 +83,7 @@ export default function Home() {
           accessibilityLabel="Edit preferences"
           onPress={() => setEditing(true)}
           style={{
-            backgroundColor: "#E6ECDF",
+            backgroundColor: "#253745",
             width: 43,
             height: 43,
             borderRadius: 23,
@@ -98,7 +91,7 @@ export default function Home() {
             justifyContent: "center",
           }}
         >
-          <Txt style={{ fontWeight: "600", color: colors.green }}>
+          <Txt style={{ fontWeight: "600", color: colors.accent }}>
             {preferences.name.trim().charAt(0).toUpperCase() || "You"}
           </Txt>
         </Pressable>
@@ -133,7 +126,7 @@ export default function Home() {
       <Enter delay={60} style={{ marginTop: 23 }}>
         <View
           style={{
-            backgroundColor: colors.green,
+            backgroundColor: colors.pale,
             borderRadius: 26,
             padding: wide ? 30 : 23,
             flexDirection: "row",
@@ -145,16 +138,16 @@ export default function Home() {
             <Row style={{ gap: 7 }}>
               <Icon
                 name={goalIcons[preferences.goal]}
-                color={colors.lime}
+                color={colors.secondary}
                 size={17}
               />
-              <Txt style={{ color: colors.lime, fontSize: 12, flexShrink: 1 }}>
+              <Txt style={{ color: colors.secondary, fontSize: 12, flexShrink: 1 }}>
                 {goal.title.toUpperCase()}
               </Txt>
             </Row>
             <Txt
               style={{
-                color: "white",
+                color: colors.ink,
                 fontSize: wide ? 32 : 26,
                 lineHeight: wide ? 39 : 32,
                 letterSpacing: -0.6,
@@ -165,7 +158,7 @@ export default function Home() {
             </Txt>
             <Txt
               style={{
-                color: "#CDDDC5",
+                color: "#9BA8AB",
                 fontSize: 13,
                 lineHeight: 20,
                 maxWidth: 390,
@@ -180,7 +173,7 @@ export default function Home() {
             >
               <Txt
                 style={{
-                  color: "#E2EFCE",
+                  color: "#CCD0CF",
                   textDecorationLine: "underline",
                   fontSize: 12,
                   marginTop: 2,
@@ -190,9 +183,10 @@ export default function Home() {
               </Txt>
             </Pressable>
           </View>
-          <View style={{ marginRight: wide ? 5 : -40, opacity: 0.96 }}>
-            <MealArt
-              size={wide ? 220 : 150}
+          <View style={{ marginLeft: 16 }}>
+            <MealPhoto
+              size={wide ? 220 : 110}
+              height={wide ? 200 : 180}
               variant={
                 preferences.diet === "vegan" ||
                 preferences.diet === "vegetarian"
@@ -216,7 +210,7 @@ export default function Home() {
             <Card style={{ padding: 19, height: "100%", gap: 13 }}>
               <View
                 style={{
-                  backgroundColor: "#E8EEDC",
+                  backgroundColor: "#253745",
                   borderRadius: 13,
                   padding: 10,
                   alignSelf: "flex-start",
@@ -239,7 +233,7 @@ export default function Home() {
             <Card style={{ padding: 19, height: "100%", gap: 13 }}>
               <View
                 style={{
-                  backgroundColor: "#F2E7DB",
+                  backgroundColor: "#253745",
                   borderRadius: 13,
                   padding: 10,
                   alignSelf: "flex-start",
@@ -287,7 +281,7 @@ export default function Home() {
           <Txt style={{ fontSize: 23, fontWeight: "600", letterSpacing: -0.5 }}>
             A few ideas for you
           </Txt>
-          <Icon name="sparkles-outline" size={20} color={colors.green} />
+          <Icon name="sparkles-outline" size={20} color={colors.accent} />
         </Row>
         <Muted>
           {diet.title} · Ready in {preferences.minutes} minutes or less
@@ -305,41 +299,14 @@ export default function Home() {
               onPress={() => setSelected(idea)}
             >
               <Card style={{ padding: 0, overflow: "hidden", gap: 0 }}>
-                <View
-                  style={{
-                    backgroundColor: ["#E7EDDE", "#F1E6D9", "#ECE6F2"][index],
-                    alignItems: "center",
-                    paddingVertical: wide ? 17 : 8,
-                    flexDirection: wide ? "column" : "row",
-                    justifyContent: "center",
-                    gap: 12,
-                  }}
-                >
-                  <MealArt size={wide ? 170 : 130} variant={idea.art} />
-                  {!wide && (
-                    <View style={{ maxWidth: 145, gap: 8 }}>
-                      <Txt style={{ fontSize: 12, color: colors.green }}>
-                        {idea.minutes} MIN · EASY PREP
-                      </Txt>
-                      <Txt
-                        style={{
-                          fontWeight: "600",
-                          fontSize: 18,
-                          lineHeight: 24,
-                        }}
-                      >
-                        {idea.title}
-                      </Txt>
-                    </View>
-                  )}
-                </View>
+                <MealPhoto recipeId={idea.id} variant={idea.art} width="100%" height={wide ? 190 : 185} />
                 <View style={{ padding: 20, gap: 10 }}>
-                  {wide && (
+                  {(
                     <Txt style={{ fontSize: 19, fontWeight: "600" }}>
                       {idea.title}
                     </Txt>
                   )}
-                  <Txt style={{ color: colors.green, fontSize: 12 }}>
+                  <Txt style={{ color: colors.accent, fontSize: 12 }}>
                     {reason}
                   </Txt>
                   <Muted>{idea.description}</Muted>
@@ -415,13 +382,13 @@ export default function Home() {
               borderRadius: 20,
             }}
           >
-            <MealArt size={180} variant={selected.art} />
+            <MealPhoto width="100%" height={220} variant={selected.art} recipeId={selected.id} />
           </View>
           <Row style={{ justifyContent: "space-between" }}>
             <Txt style={{ fontWeight: "600" }}>
               {selected.minutes} min · {preferences.servings} portions
             </Txt>
-            <Txt style={{ color: colors.green }}>
+            <Txt style={{ color: colors.accent }}>
               {formatNumber(chosen.nutrients.kcal, 0)} kcal each
             </Txt>
           </Row>
@@ -439,7 +406,7 @@ export default function Home() {
             </Row>
           ))}
           <Muted>
-            Check package labels and cross-contact information for foods you
+            Photos show serving inspiration. Check package labels and cross-contact information for foods you
             avoid. Add your own seasonings, sauces, and changes in the meal
             builder.
           </Muted>

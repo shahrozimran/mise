@@ -18,21 +18,14 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ConnectionStatus } from "./ConnectionStatus";
 
-export const colors = {
-  bg: "#F6F6F0",
-  paper: "#FFFFFF",
-  ink: "#1D332B",
-  muted: "#788078",
-  line: "#E6E8DD",
-  green: "#194C3C",
-  pale: "#EDF2E7",
-  lime: "#D9EF9D",
-  coral: "#CF795A",
-  blue: "#72999C",
-  gold: "#D6B665",
-  error: "#B34035",
-};
+import { colors } from "./theme";
+export { colors } from "./theme";
 export type IconName = React.ComponentProps<typeof Ionicons>["name"];
+export function BrandMark() {
+  return <View accessible={false} style={{width:38,height:38,borderRadius:10,borderWidth:1,borderColor:colors.soft,backgroundColor:colors.paper,alignItems:"center",justifyContent:"center"}}>
+    <Txt style={{fontSize:23,fontWeight:"600",letterSpacing:-2,color:colors.ink}}>m.</Txt>
+  </View>;
+}
 export function Icon({
   name,
   size = 20,
@@ -106,21 +99,21 @@ export function Button({
       style={({ pressed }) => [
         s.button,
         small && { minHeight: 40, paddingHorizontal: 14 },
-        variant === "primary" && { backgroundColor: colors.green },
+        variant === "primary" && { backgroundColor: colors.accent },
         variant === "secondary" && { backgroundColor: colors.pale },
-        variant === "danger" && { backgroundColor: "#FBECE6" },
+        variant === "danger" && { backgroundColor: "#253745" },
         (disabled || loading) && { opacity: 0.45 },
         pressed && { opacity: 0.75 },
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={dark ? "white" : colors.green} />
+        <ActivityIndicator color={dark ? colors.onAccent : colors.accent} />
       ) : icon ? (
         <Icon
           name={icon}
           size={18}
           color={
-            dark ? "white" : variant === "danger" ? colors.error : colors.green
+            dark ? colors.onAccent : variant === "danger" ? colors.error : colors.accent
           }
         />
       ) : null}
@@ -129,10 +122,10 @@ export function Button({
           fontWeight: "600",
           fontSize: small ? 13 : 14,
           color: dark
-            ? "white"
+            ? colors.onAccent
             : variant === "danger"
               ? colors.error
-              : colors.green,
+              : colors.accent,
         }}
       >
         {label}
@@ -150,7 +143,8 @@ export function Field({
       <Txt style={s.label}>{label}</Txt>
       <TextInput
         accessibilityLabel={label}
-        placeholderTextColor="#969F95"
+        selectionColor={colors.accent}
+        placeholderTextColor="#9BA8AB"
         {...props}
         style={[
           s.input,
@@ -179,13 +173,13 @@ export function Chip({
       onPress={onPress}
       style={[
         s.chip,
-        active && { backgroundColor: colors.green, borderColor: colors.green },
+        active && { backgroundColor: colors.accent, borderColor: colors.accent },
       ]}
     >
       <Txt
         style={{
           fontSize: 12,
-          color: active ? "white" : colors.green,
+          color: active ? colors.onAccent : colors.accent,
           fontWeight: "500",
         }}
       >
@@ -202,7 +196,7 @@ export function Notice({
     <View
       accessibilityRole={error ? "alert" : undefined}
       style={{
-        backgroundColor: error ? "#FFF0E9" : colors.pale,
+        backgroundColor: error ? "#253745" : colors.pale,
         padding: 14,
         borderRadius: 12,
       }}
@@ -211,7 +205,7 @@ export function Notice({
         style={{
           fontSize: 13,
           lineHeight: 20,
-          color: error ? colors.error : colors.green,
+          color: error ? colors.error : colors.accent,
         }}
       >
         {children}
@@ -234,9 +228,7 @@ export function Page({
       <View style={s.page}>
         <Row style={{ justifyContent: "space-between", marginBottom: 34 }}>
           <Row style={{ gap: 7 }}>
-            <View style={s.brandMark}>
-              <Icon name="leaf" color={colors.lime} size={20} />
-            </View>
+            <BrandMark />
             <Txt style={s.brand}>mise.</Txt>
           </Row>
           <ConnectionStatus />
@@ -330,16 +322,16 @@ export const s = StyleSheet.create({
   },
   muted: { color: colors.muted, fontSize: 13, lineHeight: 20 },
   eyebrow: {
-    color: colors.green,
+    color: colors.accent,
     fontSize: 10,
     letterSpacing: 2.1,
     fontWeight: "700",
   },
   heading: {
-    fontSize: 40,
-    lineHeight: 46,
+    fontSize: 34,
+    lineHeight: 41,
     letterSpacing: -1.3,
-    fontFamily: Platform.OS === "web" ? "Georgia" : "serif",
+    fontWeight: "600",
     color: colors.ink,
   },
   page: {
@@ -353,12 +345,12 @@ export const s = StyleSheet.create({
   brandMark: {
     width: 33,
     height: 35,
-    backgroundColor: colors.green,
+    backgroundColor: colors.pale,
     borderRadius: 11,
     alignItems: "center",
     justifyContent: "center",
   },
-  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: "#64865C" },
+  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: "#9BA8AB" },
   card: {
     backgroundColor: colors.paper,
     borderRadius: 20,
@@ -378,14 +370,14 @@ export const s = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  label: { fontSize: 12, fontWeight: "600", color: "#5F6D61" },
+  label: { fontSize: 12, fontWeight: "600", color: "#9BA8AB" },
   input: {
     minHeight: 48,
     padding: 13,
     borderWidth: 1,
-    borderColor: colors.line,
+    borderColor: colors.soft,
     borderRadius: 11,
-    backgroundColor: "#FCFCF8",
+    backgroundColor: "#06141B",
     color: colors.ink,
     fontSize: 15,
   },
@@ -406,12 +398,14 @@ export const s = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(17,38,29,0.38)",
+    backgroundColor: "rgba(6,20,27,0.78)",
     justifyContent: "flex-end",
     alignItems: "center",
   },
   sheet: {
-    backgroundColor: colors.bg,
+    backgroundColor: colors.paper,
+    borderWidth: 1,
+    borderColor: colors.line,
     padding: 24,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
@@ -420,7 +414,7 @@ export const s = StyleSheet.create({
     height: "94%",
   },
   footer: {
-    color: "#9BA397",
+    color: "#9BA8AB",
     fontSize: 11,
     textAlign: "center",
     marginTop: 32,

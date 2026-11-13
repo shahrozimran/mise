@@ -137,7 +137,7 @@ export function PasteRecipe({
                   >
                     <Icon
                       name={confirmed[row.id] ? "checkbox" : "square-outline"}
-                      color={colors.green}
+                      color={colors.accent}
                       size={23}
                     />
                   </Pressable>

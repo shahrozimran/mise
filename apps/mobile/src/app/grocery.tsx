@@ -132,7 +132,7 @@ export default function Grocery() {
                           ? "checkbox"
                           : "square-outline"
                       }
-                      color={colors.green}
+                      color={colors.accent}
                     />
                     <View style={{ flex: 1, gap: 4 }}>
                       <Txt style={{ fontWeight: "500" }}>{recipe.title}</Txt>
@@ -251,7 +251,7 @@ export default function Grocery() {
                     <Row>
                       <Icon
                         name={checked ? "checkbox" : "square-outline"}
-                        color={colors.green}
+                        color={colors.accent}
                       />
                       <View style={{ flex: 1, gap: 5 }}>
                         <Txt

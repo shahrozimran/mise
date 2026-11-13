@@ -161,7 +161,7 @@ function KitchenEditor() {
             <View
               key={label}
               style={{
-                backgroundColor: index === 0 ? colors.green : colors.pale,
+                backgroundColor: index === 0 ? colors.accent : colors.pale,
                 paddingVertical: 11,
                 paddingHorizontal: 15,
                 borderRadius: 12,
@@ -169,7 +169,7 @@ function KitchenEditor() {
             >
               <Txt
                 style={{
-                  color: index === 0 ? "white" : colors.green,
+                  color: index === 0 ? colors.onAccent : colors.accent,
                   fontSize: 12,
                 }}
               >
@@ -193,7 +193,7 @@ function KitchenEditor() {
         <Card style={{ marginBottom: 20, backgroundColor: colors.pale }}>
           <Row style={{ justifyContent: "space-between" }}>
             <Eyebrow>LIVE BATCH TOTALS</Eyebrow>
-            <Txt style={{ color: colors.green, fontSize: 12 }}>
+            <Txt style={{ color: colors.accent, fontSize: 12 }}>
               {formatNumber(equalPortion(draft).kcal, 0)} kcal / container
             </Txt>
           </Row>
@@ -294,10 +294,10 @@ function KitchenEditor() {
                     height: 40,
                     borderRadius: 12,
                     backgroundColor: [
-                      "#F1E6D8",
-                      "#F2EDDE",
-                      "#E8EDDD",
-                      "#F4E4DD",
+                      "#253745",
+                      "#253745",
+                      "#253745",
+                      "#253745",
                     ][index % 4],
                     alignItems: "center",
                     justifyContent: "center",
@@ -313,7 +313,7 @@ function KitchenEditor() {
                     }
                     size={18}
                     color={
-                      ["#A0805A", "#A79C67", "#7C9262", "#BC7F62"][index % 4]
+                      ["#9BA8AB", "#9BA8AB", "#9BA8AB", "#9BA8AB"][index % 4]
                     }
                   />
                 </View>
@@ -565,9 +565,9 @@ function KitchenEditor() {
             onPress={() => setExtraTools(!extraTools)}
           />
           {extraTools && (
-            <Card style={{ backgroundColor: "#EFEFE5" }}>
+            <Card style={{ backgroundColor: "#253745" }}>
               <Row>
-                <Icon name="sparkles-outline" color={colors.green} />
+                <Icon name="sparkles-outline" color={colors.accent} />
                 <Txt style={{ fontWeight: "600", fontSize: 15 }}>
                   A little prep. A lot of clarity.
                 </Txt>

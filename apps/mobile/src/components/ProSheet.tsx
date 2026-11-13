@@ -19,7 +19,7 @@ export function ProSheet({
     >
       <View
         style={{
-          backgroundColor: colors.green,
+          backgroundColor: colors.pale,
           borderRadius: 17,
           padding: 23,
           gap: 19,
@@ -48,10 +48,10 @@ export function ProSheet({
           ],
         ].map(([icon, title, detail]) => (
           <Row key={title}>
-            <Icon name={icon as "book-outline"} color={colors.lime} size={23} />
+            <Icon name={icon as "book-outline"} color={colors.secondary} size={23} />
             <View style={{ flex: 1, gap: 4 }}>
-              <Txt style={{ color: "white", fontWeight: "600" }}>{title}</Txt>
-              <Txt style={{ color: "#BED2BC", fontSize: 12, lineHeight: 18 }}>
+              <Txt style={{ color: colors.ink, fontWeight: "600" }}>{title}</Txt>
+              <Txt style={{ color: "#9BA8AB", fontSize: 12, lineHeight: 18 }}>
                 {detail}
               </Txt>
             </View>
