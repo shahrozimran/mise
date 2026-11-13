@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { formatNumber, Nutrients } from "@mise/domain";
-import { useTheme, Icon, Row, Txt } from "./ui";
+import { useTheme, Row, Txt } from "./ui";
 
 export function Macros({
   nutrients,
@@ -23,7 +23,7 @@ const macroConfig = [
     <View
       style={{
         backgroundColor: dark ? colors.pale : colors.paper,
-        borderRadius: 20,
+        borderRadius: 16,
         padding: 25,
         gap: 21,
       }}
@@ -39,11 +39,6 @@ const macroConfig = [
         >
           {label}
         </Txt>
-        <Icon
-          name="nutrition-outline"
-          color={dark ? colors.secondary : colors.accent}
-          size={22}
-        />
       </Row>
       <Row style={{ alignItems: "baseline", gap: 8 }}>
         <Txt

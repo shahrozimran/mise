@@ -254,18 +254,6 @@ export function FoodPicker({
                 }}
               >
                 <Row>
-                  <View
-                    style={{
-                      backgroundColor: colors.pale,
-                      width: 38,
-                      height: 38,
-                      borderRadius: 12,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Icon name="leaf-outline" size={19} />
-                  </View>
                   <View style={{ flex: 1, gap: 4 }}>
                     <Txt style={{ fontSize: 14, fontWeight: "500" }}>
                       {food.name}

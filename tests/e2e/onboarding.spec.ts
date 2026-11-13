@@ -38,7 +38,7 @@ test("first-run preferences personalize meals, persist, and open a usable portio
     .getByRole("button", { name: "Show my meal ideas", exact: true })
     .click();
   await expect(
-    page.getByText("Let’s make something good, Amina."),
+    page.getByText("Hello, Amina."),
   ).toBeVisible();
   await expect(
     page.getByRole("button", {
@@ -59,7 +59,7 @@ test("first-run preferences personalize meals, persist, and open a usable portio
   });
   await page.reload();
   await expect(
-    page.getByText("Let’s make something good, Amina."),
+    page.getByText("Hello, Amina."),
   ).toBeVisible();
   await page
     .getByRole("button", { name: "View 15-minute chickpea bowl", exact: true })
@@ -133,7 +133,7 @@ test("desktop onboarding and reduced-motion layout have no runtime errors", asyn
   });
   await page.getByRole("button", { name: "Skip setup for now" }).click();
   await expect(
-    page.getByText("A few ideas for you", { exact: true }),
+    page.getByText("Suggested recipes", { exact: true }),
   ).toBeVisible();
   await settleAnimations(page);
   await page.screenshot({

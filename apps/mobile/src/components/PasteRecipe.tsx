@@ -42,7 +42,7 @@ export function PasteRecipe({
       <Sheet
         visible={visible && !editing}
         onClose={onClose}
-        title="From recipe to reality"
+        title="Paste a recipe"
         subtitle="Paste ingredient lines. Review each match before it reaches your dish."
       >
         {!!error && <Notice error>{error}</Notice>}
@@ -61,7 +61,7 @@ export function PasteRecipe({
             />
             <Button
               label="Find ingredients"
-              icon="sparkles-outline"
+              icon="search"
               disabled={!text.trim()}
               onPress={() => {
                 try {

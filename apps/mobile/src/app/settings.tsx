@@ -58,8 +58,8 @@ export default function Settings() {
   }
   return (
     <Page
-      title="Your kitchen, your rules."
-      subtitle="A few preferences. A little peace of mind."
+      title="Settings"
+      subtitle="Manage your preferences, subscription, and saved data."
     >
       {!!message && (
         <View style={{ marginBottom: 20 }}>
@@ -73,7 +73,7 @@ export default function Settings() {
           <Muted>{mode === "dark" ? "Dark mode" : "Light mode"} is active. Mise switches automatically when your system appearance changes.</Muted>
         </Card>
         <Card>
-          <Eyebrow>MADE FOR YOU</Eyebrow>
+          <Eyebrow>PERSONALIZATION</Eyebrow>
           <Txt style={{ fontSize: 22, fontWeight: "600" }}>
             Your food preferences
           </Txt>
@@ -98,7 +98,7 @@ export default function Settings() {
         <Card>
           <Eyebrow>MEASUREMENTS</Eyebrow>
           <Txt style={{ fontSize: 21, fontWeight: "500" }}>
-            What’s in your measuring cup?
+            Measurement units
           </Txt>
           <Row>
             <Chip
@@ -130,10 +130,10 @@ export default function Settings() {
           </Muted>
         </Card>
         <Card>
-          <Eyebrow>ROOM TO GROW</Eyebrow>
+          <Eyebrow>SUBSCRIPTION</Eyebrow>
           <Row style={{ justifyContent: "space-between" }}>
             <Txt style={{ fontSize: 21, fontWeight: "500" }}>
-              {billing.pro ? "Your Pro kitchen" : "Mise, with a little more."}
+              {billing.pro ? "Mise Pro" : "Your plan"}
             </Txt>
             <Chip label={billing.pro ? "Pro active" : "Free plan"} />
           </Row>

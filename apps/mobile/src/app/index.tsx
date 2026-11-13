@@ -34,7 +34,7 @@ import { Enter, TouchCard } from "../components/motion";
 import { MealPhoto } from "../components/MealPhoto";
 import { ConnectionStatus } from "../components/ConnectionStatus";
 import { SurfaceTexture } from "../components/SurfaceTexture";
-import { goalIcons, Onboarding } from "../components/Onboarding";
+import { Onboarding } from "../components/Onboarding";
 
 export default function Home() {
   const { colors } = useTheme();
@@ -86,9 +86,9 @@ export default function Home() {
           onPress={() => setEditing(true)}
           style={{
             backgroundColor: colors.pale,
-            width: 43,
-            height: 43,
-            borderRadius: 23,
+            width: 44,
+            height: 44,
+            borderRadius: 22,
             alignItems: "center",
             justifyContent: "center",
           }}
@@ -101,18 +101,18 @@ export default function Home() {
       <View style={{marginBottom:18}}><ConnectionStatus /></View>
       <Enter>
         <Txt style={{ color: colors.muted, fontSize: 14, marginBottom: 8 }}>
-          YOUR KITCHEN, YOUR PACE
+          MEAL PREP
         </Txt>
         <Txt
           style={{
-            fontSize: wide ? 38 : 29,
+            fontSize: 30,
             fontWeight: "600",
             letterSpacing: -1,
           }}
         >
           {preferences.name
-            ? `Let’s make something good, ${preferences.name}.`
-            : "Let’s make something good."}
+            ? `Hello, ${preferences.name}.`
+            : "Your kitchen"}
         </Txt>
         <Txt
           style={{
@@ -122,88 +122,35 @@ export default function Home() {
             lineHeight: 22,
           }}
         >
-          A meal you enjoy. A little prep. One less thing to think about.
+          Build recipes, understand each portion, and plan your next batch.
         </Txt>
       </Enter>
       <Enter delay={60} style={{ marginTop: 23 }}>
         <View
           testID="meal-focus-card"
-          style={{
-            backgroundColor: colors.pale,
-            borderRadius: 26,
-            padding: wide ? 30 : 23,
-            flexDirection: "row",
-            alignItems: "center",
-            overflow: "hidden",
-          }}
+          style={{ backgroundColor: colors.pale, borderRadius: 16, padding: 20, overflow: "hidden", gap: 12 }}
         >
           <SurfaceTexture />
-          <View style={{ flex: 1, gap: 13 }}>
-            <Row style={{ gap: 7 }}>
-              <Icon
-                name={goalIcons[preferences.goal]}
-                color={colors.secondary}
-                size={17}
-              />
-              <Txt style={{ color: colors.secondary, fontSize: 12, flexShrink: 1 }}>
-                {goal.title.toUpperCase()}
-              </Txt>
-            </Row>
-            <Txt
-              style={{
-                color: colors.ink,
-                fontSize: wide ? 32 : 26,
-                lineHeight: wide ? 39 : 32,
-                letterSpacing: -0.6,
-                fontWeight: "500",
-              }}
-            >
-              Small steps.{"\n"}Good food.
-            </Txt>
-            <Txt
-              style={{
-                color: colors.muted,
-                fontSize: 13,
-                lineHeight: 20,
-                maxWidth: 390,
-              }}
-            >
-              {goal.detail}
+          <Row style={{ justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+            <Txt style={{ color: colors.secondary, fontSize: 11, fontWeight: "600", letterSpacing: 1 }}>
+              {goal.title.toUpperCase()}
             </Txt>
             <Pressable
               accessibilityRole="button"
-              onPress={() => setEditing(true)}
               accessibilityLabel="Change my preferences"
+              onPress={() => setEditing(true)}
+              style={{ minHeight: 44, justifyContent: "center", paddingHorizontal: 8 }}
             >
-              <Txt
-                style={{
-                  color: colors.ink,
-                  textDecorationLine: "underline",
-                  fontSize: 12,
-                  marginTop: 2,
-                }}
-              >
-                Make this feel more like you
-              </Txt>
+              <Txt style={{ fontSize: 13, fontWeight: "600", textDecorationLine: "underline" }}>Edit preferences</Txt>
             </Pressable>
-          </View>
-          <View style={{ marginLeft: 16 }}>
-            <MealPhoto
-              size={wide ? 220 : 110}
-              height={wide ? 200 : 180}
-              variant={
-                preferences.diet === "vegan" ||
-                preferences.diet === "vegetarian"
-                  ? "plant"
-                  : "chicken"
-              }
-            />
-          </View>
+          </Row>
+          <Txt style={{ fontSize: 19, fontWeight: "600" }}>{diet.title}</Txt>
+          <Muted>Up to {preferences.minutes} minutes · {preferences.servings} portions per batch</Muted>
         </View>
       </Enter>
       <View style={{ marginTop: 27, gap: 12 }}>
         <Txt style={{ fontSize: 20, fontWeight: "600" }}>
-          What would you like to do?
+          Start cooking
         </Txt>
         <Row style={{ alignItems: "stretch", flexWrap: "wrap", gap: 12 }}>
           <TouchCard
@@ -212,21 +159,11 @@ export default function Home() {
             style={{ flex: 1, minWidth: 140 }}
           >
             <Card style={{ padding: 19, height: "100%", gap: 13 }}>
-              <View
-                style={{
-                  backgroundColor: colors.pale,
-                  borderRadius: 13,
-                  padding: 10,
-                  alignSelf: "flex-start",
-                }}
-              >
-                <Icon name="add" size={24} />
-              </View>
+              <Icon name="add" size={22} />
               <Txt style={{ fontWeight: "600", fontSize: 16 }}>
                 Build my own meal
               </Txt>
               <Muted>Add foods and see what’s in each portion.</Muted>
-              <Icon name="arrow-forward" size={18} />
             </Card>
           </TouchCard>
           <TouchCard
@@ -235,21 +172,11 @@ export default function Home() {
             style={{ flex: 1, minWidth: 140 }}
           >
             <Card style={{ padding: 19, height: "100%", gap: 13 }}>
-              <View
-                style={{
-                  backgroundColor: colors.pale,
-                  borderRadius: 13,
-                  padding: 10,
-                  alignSelf: "flex-start",
-                }}
-              >
-                <Icon name="clipboard-outline" size={24} />
-              </View>
+              <Icon name="clipboard-outline" size={22} />
               <Txt style={{ fontWeight: "600", fontSize: 16 }}>
                 Paste a recipe
               </Txt>
               <Muted>Turn an ingredient list into a meal.</Muted>
-              <Icon name="arrow-forward" size={18} />
             </Card>
           </TouchCard>
         </Row>
@@ -264,7 +191,7 @@ export default function Home() {
               <Row>
                 <View style={{ flex: 1, gap: 5 }}>
                   <Txt style={{ color: colors.muted, fontSize: 11 }}>
-                    PICK UP WHERE YOU LEFT OFF
+                    CURRENT DRAFT
                   </Txt>
                   <Txt style={{ fontWeight: "600", fontSize: 16 }}>
                     {data.draft.title}
@@ -283,9 +210,8 @@ export default function Home() {
       <View style={{ marginTop: 34, marginBottom: 17, gap: 9 }}>
         <Row style={{ justifyContent: "space-between" }}>
           <Txt style={{ fontSize: 23, fontWeight: "600", letterSpacing: -0.5 }}>
-            A few ideas for you
+            Suggested recipes
           </Txt>
-          <Icon name="sparkles-outline" size={20} color={colors.accent} />
         </Row>
         <Muted>
           {diet.title} · Ready in {preferences.minutes} minutes or less
@@ -343,9 +269,8 @@ export default function Home() {
       </View>
       {!suggestions.length && (
         <Card>
-          <Icon name="leaf-outline" size={29} />
           <Txt style={{ fontWeight: "600", fontSize: 19 }}>
-            Let’s find another way.
+            No matching recipes yet
           </Txt>
           <Muted>
             Our starter collection has no meals matching all your choices. Keep
@@ -368,7 +293,7 @@ export default function Home() {
         <Row style={{ justifyContent: "center", gap: 7 }}>
           <Icon name="help-circle-outline" size={17} color={colors.muted} />
           <Txt style={{ color: colors.muted, fontSize: 12 }}>
-            New to calories and protein? Start here.
+            Understanding calories and macros
           </Txt>
         </Row>
       </Pressable>
@@ -496,7 +421,7 @@ function HomeScroll({ children }: React.PropsWithChildren) {
       style={{ flex: 1, backgroundColor: colors.bg }}
       contentContainerStyle={{ padding: 23, paddingBottom: 30 }}
     >
-      <View style={{ maxWidth: 1080, width: "100%", alignSelf: "center" }}>
+      <View style={{ maxWidth: 1000, width: "100%", alignSelf: "center" }}>
         {children}
       </View>
     </ScrollView>

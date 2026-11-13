@@ -36,7 +36,6 @@ import { ProSheet } from "../components/ProSheet";
 import { useBilling } from "../services/billing";
 import { exportMacroCard } from "../services/export";
 import { router, useLocalSearchParams } from "expo-router";
-import { Enter } from "../components/motion";
 
 export default function Kitchen() {
   const draftId = useKitchen((state) => state.data!.draft.id);
@@ -141,7 +140,7 @@ function KitchenEditor() {
   }
   return (
     <Page
-      title="Let’s build your meal."
+      title="Meal builder"
       subtitle="Add your ingredients. Choose your portions. We’ll do the math."
       action={
         <Button
@@ -153,34 +152,6 @@ function KitchenEditor() {
         />
       }
     >
-      <Enter style={{ marginBottom: 22 }}>
-        <Row style={{ flexWrap: "wrap", gap: 9 }}>
-          {[
-            "1  Add ingredients",
-            "2  Choose portions",
-            "3  Save your meal",
-          ].map((label, index) => (
-            <View
-              key={label}
-              style={{
-                backgroundColor: index === 0 ? colors.accent : colors.pale,
-                paddingVertical: 11,
-                paddingHorizontal: 15,
-                borderRadius: 12,
-              }}
-            >
-              <Txt
-                style={{
-                  color: index === 0 ? colors.onAccent : colors.accent,
-                  fontSize: 12,
-                }}
-              >
-                {label}
-              </Txt>
-            </View>
-          ))}
-        </Row>
-      </Enter>
       {message ? (
         <Pressable onPress={() => setMessage("")} style={{ marginBottom: 17 }}>
           <Notice>{message}</Notice>
@@ -218,7 +189,7 @@ function KitchenEditor() {
         >
           <Card>
             <Row style={{ justifyContent: "space-between" }}>
-              <Eyebrow>ON THE COUNTER</Eyebrow>
+              <Eyebrow>INGREDIENTS</Eyebrow>
               <Row style={{ gap: 5 }}>
                 <Icon
                   name={saving ? "sync-outline" : "checkmark-circle-outline"}
@@ -274,8 +245,7 @@ function KitchenEditor() {
             </Row>
             {!draft.ingredients.length && (
               <View style={{ alignItems: "center", padding: 30, gap: 13 }}>
-                <Icon name="leaf-outline" size={32} color={colors.muted} />
-                <Txt>Your next great batch starts here.</Txt>
+                <Txt>No ingredients added yet</Txt>
                 <Muted>Add an ingredient or paste a recipe.</Muted>
               </View>
             )}
@@ -290,35 +260,6 @@ function KitchenEditor() {
                   gap: 10,
                 }}
               >
-                <View
-                  style={{
-                    width: 38,
-                    height: 40,
-                    borderRadius: 12,
-                    backgroundColor: [
-                      colors.pale,
-                      colors.pale,
-                      colors.pale,
-                      colors.pale,
-                    ][index % 4],
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Icon
-                    name={
-                      /oil|butter/i.test(item.food.name)
-                        ? "water-outline"
-                        : /chicken|beef|fish/i.test(item.food.name)
-                          ? "restaurant-outline"
-                          : "leaf-outline"
-                    }
-                    size={18}
-                    color={
-                      [colors.muted, colors.muted, colors.muted, colors.muted][index % 4]
-                    }
-                  />
-                </View>
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel={`Edit ${item.food.name}`}
@@ -326,9 +267,9 @@ function KitchenEditor() {
                     setEdit(item);
                     setModal("food");
                   }}
-                  style={{ flex: 1, gap: 5 }}
+                  style={{ flex: 1, gap: 5, minHeight: 44, justifyContent: "center" }}
                 >
-                  <Txt style={{ fontSize: 13, fontWeight: "600" }}>
+                  <Txt style={{ fontSize: 14, fontWeight: "600" }}>
                     {item.food.name}
                   </Txt>
                   <Txt style={{ fontSize: 11, color: colors.muted }}>
@@ -356,7 +297,7 @@ function KitchenEditor() {
                     setRemoved(item);
                     removeIngredient(item.id);
                   }}
-                  style={{ padding: 10 }}
+                  style={{ minHeight: 44, minWidth: 44, justifyContent: "center", alignItems: "center" }}
                 >
                   <Icon name="close" size={15} color={colors.muted} />
                 </Pressable>
@@ -569,9 +510,8 @@ function KitchenEditor() {
           {extraTools && (
             <Card style={{ backgroundColor: colors.pale }}>
               <Row>
-                <Icon name="sparkles-outline" color={colors.accent} />
                 <Txt style={{ fontWeight: "600", fontSize: 15 }}>
-                  A little prep. A lot of clarity.
+                  Recipe tools
                 </Txt>
               </Row>
               <Muted>

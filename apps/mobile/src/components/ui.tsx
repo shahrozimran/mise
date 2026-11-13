@@ -57,7 +57,7 @@ export function Eyebrow({ children }: PropsWithChildren) {
 }
 export function Heading({ children }: PropsWithChildren) {
   const s = useStyles();
-  return <Txt style={s.heading}>{children}</Txt>;
+  return <Txt accessibilityRole="header" style={s.heading}>{children}</Txt>;
 }
 export function Muted({ children }: PropsWithChildren) {
   const s = useStyles();
@@ -86,6 +86,8 @@ export function Button({
   loading,
   small,
   testID,
+  style,
+  accessibilityLabel,
 }: {
   label: string;
   onPress: () => void;
@@ -95,6 +97,8 @@ export function Button({
   loading?: boolean;
   small?: boolean;
   testID?: string;
+  style?: ViewStyle;
+  accessibilityLabel?: string;
 }) {
   const { colors } = useTheme();
   const s = useStyles();
@@ -102,18 +106,22 @@ export function Button({
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={label}
+      accessibilityLabel={accessibilityLabel ?? label}
+      accessibilityState={{ disabled: !!disabled || !!loading, busy: !!loading }}
+      aria-disabled={!!disabled || !!loading}
+      aria-busy={!!loading}
       disabled={disabled || loading}
       testID={testID}
       onPress={onPress}
       style={({ pressed }) => [
         s.button,
-        small && { minHeight: 40, paddingHorizontal: 14 },
+        small && { minHeight: 44, paddingHorizontal: 14 },
         variant === "primary" && { backgroundColor: colors.accent },
         variant === "secondary" && { backgroundColor: colors.pale },
         variant === "danger" && { backgroundColor: colors.pale },
         (disabled || loading) && { opacity: 0.45 },
         pressed && { opacity: 0.75 },
+        style,
       ]}
     >
       {loading ? (
@@ -130,7 +138,7 @@ export function Button({
       <Txt
         style={{
           fontWeight: "600",
-          fontSize: small ? 13 : 14,
+          fontSize: small ? 13 : 15,
           color: dark
             ? colors.onAccent
             : variant === "danger"
@@ -184,6 +192,8 @@ export function Chip({
   return (
     <Pressable
       accessibilityRole={onPress ? "button" : undefined}
+      accessibilityState={onPress ? { selected: active } : undefined}
+      aria-selected={onPress ? active : undefined}
       onPress={onPress}
       style={[
         s.chip,
@@ -244,15 +254,14 @@ export function Page({
       keyboardShouldPersistTaps="handled"
     >
       <View style={s.page}>
-        <Row style={{ justifyContent: "space-between", marginBottom: 34 }}>
+        <Row style={{ justifyContent: "space-between", marginBottom: 28, paddingBottom: 20, borderBottomWidth: 1, borderBottomColor: colors.line, flexWrap: "wrap" }}>
           <Row style={{ gap: 7 }}>
             <BrandMark />
             <Txt style={s.brand}>mise.</Txt>
           </Row>
           <ConnectionStatus />
         </Row>
-        <View style={{ marginBottom: 25, gap: 9 }}>
-          <Eyebrow>LESS LOGGING. MORE COOKING.</Eyebrow>
+        <View style={{ marginBottom: 24, gap: 8 }}>
           <Heading>{title}</Heading>
           <Row
             style={{
@@ -266,7 +275,6 @@ export function Page({
           </Row>
         </View>
         {children}
-        <Txt style={s.footer}>Made for real food, in your real kitchen.</Txt>
       </View>
     </ScrollView>
   );
@@ -336,31 +344,31 @@ export function Sheet({
 function createUIStyles(colors: ThemeColors) { return StyleSheet.create({
   text: {
     color: colors.ink,
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: Platform.OS === "ios" ? "System" : "sans-serif",
   },
-  muted: { color: colors.muted, fontSize: 13, lineHeight: 20 },
+  muted: { color: colors.muted, fontSize: 14, lineHeight: 22 },
   eyebrow: {
     color: colors.accent,
     fontSize: 10,
-    letterSpacing: 2.1,
-    fontWeight: "700",
+    letterSpacing: 1.2,
+    fontWeight: "600",
   },
   heading: {
-    fontSize: 34,
-    lineHeight: 41,
-    letterSpacing: -1.3,
+    fontSize: 30,
+    lineHeight: 37,
+    letterSpacing: -0.8,
     fontWeight: "600",
     color: colors.ink,
   },
   page: {
-    padding: 24,
+    padding: 20,
     paddingTop: 24,
-    maxWidth: 1150,
+    maxWidth: 1040,
     width: "100%",
     alignSelf: "center",
   },
-  brand: { fontSize: 33, fontWeight: "700", letterSpacing: -1.5 },
+  brand: { fontSize: 28, fontWeight: "700", letterSpacing: -1.2 },
   brandMark: {
     width: 33,
     height: 35,
@@ -372,16 +380,16 @@ function createUIStyles(colors: ThemeColors) { return StyleSheet.create({
   dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.muted },
   card: {
     backgroundColor: colors.paper,
-    borderRadius: 20,
-    padding: 24,
+    borderRadius: 16,
+    padding: 20,
     borderWidth: 1,
     borderColor: colors.line,
     gap: 16,
   },
   row: { flexDirection: "row", alignItems: "center", gap: 12 },
   button: {
-    minHeight: 46,
-    borderRadius: 12,
+    minHeight: 48,
+    borderRadius: 10,
     paddingHorizontal: 19,
     paddingVertical: 10,
     flexDirection: "row",
@@ -404,8 +412,9 @@ function createUIStyles(colors: ThemeColors) { return StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.line,
     paddingHorizontal: 12,
-    paddingVertical: 9,
-    borderRadius: 9,
+    paddingVertical: 12,
+    minHeight: 44,
+    borderRadius: 8,
     backgroundColor: colors.paper,
   },
   iconButton: {
@@ -431,12 +440,6 @@ function createUIStyles(colors: ThemeColors) { return StyleSheet.create({
     maxWidth: 650,
     width: "100%",
     height: "94%",
-  },
-  footer: {
-    color: colors.muted,
-    fontSize: 11,
-    textAlign: "center",
-    marginTop: 32,
   },
 });
 }

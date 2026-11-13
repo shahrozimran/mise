@@ -2,6 +2,12 @@
 
 Verified on 13 November 2026.
 
+## 0.6.0 interface refinement
+
+Decorative stars and repeated food glyphs are removed. Main screens use direct titles, compact typography and consistent spacing. Home prioritizes cooking actions and a short preference summary. Shopping provides an actionable empty state, a secondary Pro explanation, named batch controls, recipe selection counts, and accessible checked-item progress. System appearance, offline editing, keyboard-aware dialogs, personalization, and subscription gates are preserved. See `DESIGN_SYSTEM.md`.
+
+Workspace type checks/lint and all 75 domain/API tests passed. All 16 browser workflows were verified; affected grocery and access-control cases were rerun successfully after correcting the progress bar's web accessibility values. Android Hermes export passed. Light/dark phone layouts, a narrow 320 px viewport, desktop Shopping, the builder, and ingredient search were visually reviewed with no runtime errors in the visual-review session. Native device testing remains outstanding.
+
 ## 0.5.0 system light and dark appearance
 
 The app follows device appearance automatically. Light mode uses off-white/charcoal with a subtle beige paper texture; dark mode matches the visible grayscale swatches in the latest reference. The image's printed brown/pink hex labels conflict with those swatches, so the visual colors were used. See `DESIGN_SYSTEM.md` and `apps/mobile/assets/TEXTURE.md` for implementation and asset details.

@@ -82,7 +82,7 @@ test("complete offline dish, persistent library, portions, and immutable batch h
   page,
 }) => {
   await page.goto("/cook");
-  await expect(page.getByText("Let’s build your meal.")).toBeVisible();
+  await expect(page.getByText("Meal builder")).toBeVisible();
   await page.context().setOffline(true);
   await page
     .getByLabel("Dish name", { exact: true })
@@ -162,7 +162,7 @@ test("paste parser requires explicit review and supports ingredient confirmation
 test("mobile layout and calorie scaling preview", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/cook");
-  await expect(page.getByText("Let’s build your meal.")).toBeVisible();
+  await expect(page.getByText("Meal builder")).toBeVisible();
   await page.screenshot({ path: "artifacts/mise-mobile.png", fullPage: true });
   await page.getByRole("tab", { name: "Settings" }).click();
   await setProPreview(page, true);
@@ -204,7 +204,11 @@ test("grocery generation aggregates weights, subtracts pantry, and persists chec
       exact: true,
     })
     .click();
+  await page.getByRole("button", { name: "More batches of Chicken & rice bowls", exact: true }).click();
+  await expect(page.getByText("2×", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Fewer batches of Chicken & rice bowls", exact: true }).click();
   await page.getByRole("button", { name: /Build grocery list/ }).click();
+  await expect(page.getByRole("progressbar", { name: "Shopping progress" })).toHaveAttribute("aria-valuenow", "0");
   await expect(
     page.getByText("500 g required · Poultry Products", { exact: true }),
   ).toBeVisible();
@@ -230,6 +234,7 @@ test("grocery generation aggregates weights, subtracts pantry, and persists chec
       exact: true,
     }),
   ).toBeChecked();
+  await expect(page.getByRole("progressbar", { name: "Shopping progress" })).toHaveAttribute("aria-valuenow", "1");
   await page.reload();
   await expect(
     page.getByRole("checkbox", {
@@ -237,6 +242,30 @@ test("grocery generation aggregates weights, subtracts pantry, and persists chec
       exact: true,
     }),
   ).toBeChecked();
+});
+
+test("shopping starts with a recipe and preserves Pro access requirements", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 740 });
+  await page.goto("/grocery");
+  await expect(page.getByTestId("shopping-empty-state")).toBeVisible();
+  await expect(page.getByRole("button", { name: /Build grocery list/ })).toHaveCount(0);
+  await page.getByRole("button", { name: "Create your first recipe", exact: true }).click();
+  await expect(page.getByRole("textbox", { name: "Dish name", exact: true })).toHaveValue("Chicken & rice bowls");
+  await page.getByRole("button", { name: "Save recipe", exact: true }).click();
+  await page.getByRole("tab", { name: "Shopping" }).click();
+  await page.getByRole("checkbox", { name: "Include Chicken & rice bowls", exact: true }).click();
+  await expect(page.getByText("Subscriptions are not available in this build yet.", { exact: false })).toBeVisible();
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
+  await expect(page.getByRole("checkbox", { name: "Include Chicken & rice bowls", exact: true })).not.toBeChecked();
+  await page.getByRole("tab", { name: "Settings" }).click();
+  await setProPreview(page, true);
+  await page.getByRole("tab", { name: "Shopping" }).click();
+  await expect(page.getByRole("button", { name: /Build grocery list/ })).toBeDisabled();
+  await page.getByRole("checkbox", { name: "Include Chicken & rice bowls", exact: true }).click();
+  await expect(page.getByRole("button", { name: /Build grocery list/ })).toBeEnabled();
+  await page.getByRole("button", { name: "Fewer batches of Chicken & rice bowls", exact: true }).click();
+  await expect(page.getByRole("checkbox", { name: "Include Chicken & rice bowls", exact: true })).not.toBeChecked();
+  await expect(page.getByRole("button", { name: /Build grocery list/ })).toBeDisabled();
 });
 
 test("portable backup exports and imports actual local data", async ({
@@ -314,7 +343,7 @@ test("desktop layout renders without runtime errors", async ({ page }) => {
     if (message.type() === "error") errors.push(message.text());
   });
   await page.goto("/cook");
-  await expect(page.getByText("Let’s build your meal.")).toBeVisible();
+  await expect(page.getByText("Meal builder")).toBeVisible();
   await page.screenshot({ path: "artifacts/mise-desktop.png", fullPage: true });
   expect(errors).toEqual([]);
 });
@@ -347,7 +376,7 @@ test("free recipe slots block only the fourth new master save", async ({
     .fill("Fourth dish");
   await page.getByRole("button", { name: "Save recipe", exact: true }).click();
   await expect(
-    page.getByText("More room in your kitchen.", { exact: true }),
+    page.getByText("Mise Pro", { exact: true }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await page.getByRole("tab", { name: "Recipes" }).click();

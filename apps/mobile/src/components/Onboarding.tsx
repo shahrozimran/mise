@@ -15,17 +15,10 @@ import {
   Preferences,
 } from "@mise/domain";
 import { useKitchen } from "../data/store";
-import { BrandMark, Button, useTheme, Field, Icon, IconName, Muted, Row, Txt } from "./ui";
+import { BrandMark, Button, useTheme, Field, Icon, Muted, Row, Txt } from "./ui";
 import { Enter, TouchCard } from "./motion";
 import { MealPhoto } from "./MealPhoto";
 
-export const goalIcons: Record<Preferences["goal"], IconName> = {
-  lose: "trending-down-outline",
-  gain: "trending-up-outline",
-  muscle: "barbell-outline",
-  balanced: "leaf-outline",
-  prep: "time-outline",
-};
 const titles = [
   "What brings you here?",
   "What feels like you?",
@@ -119,9 +112,8 @@ export function Onboarding({
         {wide && (
           <View style={o.story}>
             <View style={o.storyPill}>
-              <Icon name="sparkles-outline" size={15} />
               <Txt style={{ fontSize: 12, color: colors.accent }}>
-                A LITTLE PREP. A BETTER DAY.
+                YOUR MEAL PREFERENCES
               </Txt>
             </View>
             <Txt style={o.storyTitle}>
@@ -195,14 +187,6 @@ export function Onboarding({
                           preferences.goal === option.id && o.selected,
                         ]}
                       >
-                        <View
-                          style={[
-                            o.optionIcon,
-                            { backgroundColor: colors.pale },
-                          ]}
-                        >
-                          <Icon name={goalIcons[option.id]} size={25} />
-                        </View>
                         <View style={{ flex: 1, gap: 5 }}>
                           <Txt style={o.optionTitle}>{option.title}</Txt>
                           <Txt style={o.optionDetail}>{option.detail}</Txt>
@@ -227,7 +211,7 @@ export function Onboarding({
               )}
               {step === 1 && (
                 <View accessibilityRole="radiogroup" style={{ gap: 13 }}>
-                  {dietOptions.map((option, index) => (
+                  {dietOptions.map((option) => (
                     <TouchCard
                       key={option.id}
                       label={option.title}
@@ -241,33 +225,6 @@ export function Onboarding({
                           preferences.diet === option.id && o.selected,
                         ]}
                       >
-                        <View
-                          style={[
-                            o.optionIcon,
-                            {
-                              backgroundColor: [
-                                colors.pale,
-                                colors.pale,
-                                colors.pale,
-                                colors.pale,
-                              ][index],
-                            },
-                          ]}
-                        >
-                          <Icon
-                            name={
-                              (
-                                [
-                                  "restaurant-outline",
-                                  "egg-outline",
-                                  "leaf-outline",
-                                  "fish-outline",
-                                ] as IconName[]
-                              )[index]
-                            }
-                            size={25}
-                          />
-                        </View>
                         <View style={{ flex: 1, gap: 7 }}>
                           <Txt style={o.optionTitle}>{option.title}</Txt>
                           <Txt style={o.optionDetail}>{option.detail}</Txt>
@@ -372,7 +329,6 @@ export function Onboarding({
                               preferences.minutes === minutes && o.selected,
                             ]}
                           >
-                            <Icon name="time-outline" size={22} />
                             <Txt style={{ fontWeight: "600", fontSize: 17 }}>
                               {minutes} min
                             </Txt>
@@ -469,7 +425,6 @@ export function Onboarding({
                       padding: 20,
                     }}
                   >
-                    <Icon name="checkmark-circle-outline" size={44} color={colors.accent} />
                     <Txt
                       style={{ fontSize: 23, fontWeight: "600", marginTop: 6 }}
                     >
@@ -552,7 +507,7 @@ export function Onboarding({
                         : "Show my meal ideas"
                       : "Continue"
                   }
-                  icon={step === 4 ? "sparkles-outline" : "arrow-forward"}
+                  icon={step === 4 ? "checkmark" : "arrow-forward"}
                   onPress={step === 4 ? finish : () => next(1)}
                 />
               </View>
@@ -565,7 +520,7 @@ export function Onboarding({
                 marginTop: 12,
               }}
             >
-              Made for your life. Change it anytime.
+              You can update your preferences in Settings.
             </Txt>
           </View>
         </View>
@@ -632,19 +587,12 @@ function createOnboardingStyles(colors: import("./theme").ThemeColors) { return 
     flexDirection: "row",
     alignItems: "center",
     gap: 13,
-    borderRadius: 18,
+    borderRadius: 12,
     backgroundColor: colors.paper,
     borderColor: colors.pale,
     borderWidth: 2,
   },
   selected: { borderColor: colors.accent, backgroundColor: colors.pale },
-  optionIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 15,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   optionTitle: { fontSize: 16, fontWeight: "600", color: colors.ink },
   optionDetail: { fontSize: 12, lineHeight: 18, color: colors.muted },
   avoid: {

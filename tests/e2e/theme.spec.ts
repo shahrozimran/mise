@@ -30,7 +30,7 @@ test('system appearance switches all surfaces without losing a meal or open sear
   await page.emulateMedia({colorScheme:'light'});
   await expect(page.getByTestId('page-surface').last()).toHaveCSS('background-color','rgb(248, 246, 241)');
   await page.reload();
-  await expect(page.getByText('Your kitchen, your rules.',{exact:true})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Settings',exact:true})).toBeVisible();
   await expect(page.getByTestId('page-surface').last()).toHaveCSS('background-color','rgb(248, 246, 241)');
 });
 

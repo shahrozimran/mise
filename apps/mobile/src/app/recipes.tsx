@@ -45,8 +45,8 @@ export default function Recipes() {
   }
   return (
     <Page
-      title="Keep the good ones."
-      subtitle="Your favorites, ready for another round."
+      title="Recipes"
+      subtitle="Your saved recipes and cooked batches, in one place."
     >
       <Row
         style={{
@@ -80,52 +80,36 @@ export default function Recipes() {
               label="Search your recipes"
               value={query}
               onChangeText={setQuery}
-              placeholder="A dish worth making again…"
+              placeholder="Search by recipe name"
             />
           </View>
           {!list.length ? (
             <Card style={{ alignItems: "center", paddingVertical: 45 }}>
-              <Icon name="book-outline" size={35} color={colors.accent} />
               <Txt style={{ fontSize: 23, fontWeight: "500" }}>
                 {query
-                  ? "No recipe by that name."
-                  : "Your recipe shelf starts here."}
+                  ? "No matching recipes"
+                  : "No saved recipes yet"}
               </Txt>
-              <Muted>
-                Save a dish from the Kitchen and it will be waiting here.
-              </Muted>
+              <Muted>{query ? "Try a different name or clear your search." : "Build a meal and save it to reuse the ingredients and portions."}</Muted>
               <Button
-                label="Back to the kitchen"
-                icon="arrow-forward"
-                onPress={() => router.navigate("/cook")}
+                label={query ? "Clear search" : "Create a recipe"}
+                onPress={() => query ? setQuery("") : router.navigate("/cook")}
               />
             </Card>
           ) : (
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 18 }}>
-              {list.map((recipe, index) => (
+              {list.map((recipe) => (
                 <Card
                   key={recipe.id}
                   style={{ width: width > 800 ? "48%" : "100%", gap: 17 }}
                 >
                   <Row style={{ justifyContent: "space-between" }}>
-                    <View
-                      style={{
-                        backgroundColor: index % 2 ? colors.pale : colors.pale,
-                        padding: 14,
-                        borderRadius: 16,
-                      }}
-                    >
-                      <Icon
-                        name={index % 2 ? "restaurant-outline" : "leaf-outline"}
-                        size={27}
-                        color={colors.accent}
-                      />
-                    </View>
+                    <Txt style={{ color: colors.muted, fontSize: 12 }}>SAVED RECIPE</Txt>
                     <Pressable
                       accessibilityRole="button"
                       accessibilityLabel={`Delete ${recipe.title}`}
                       onPress={() => setDeleting(recipe)}
-                      style={{ padding: 9 }}
+                      style={{ minHeight: 44, minWidth: 44, justifyContent: "center", alignItems: "center" }}
                     >
                       <Icon
                         name="trash-outline"
@@ -184,7 +168,7 @@ export default function Recipes() {
           {!data!.batches.length && (
             <Card>
               <Eyebrow>YOUR COOKING HISTORY</Eyebrow>
-              <Txt style={{ fontSize: 23 }}>Every batch tells a story.</Txt>
+              <Txt style={{ fontSize: 23 }}>No cooked batches yet</Txt>
               <Muted>
                 Record a batch in the Kitchen to preserve its ingredients,
                 measured yield, and portion values.

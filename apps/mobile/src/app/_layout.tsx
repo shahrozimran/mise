@@ -99,7 +99,7 @@ function KitchenLayout() {
                 title: "Home",
                 tabBarIcon: ({ color }) => (
                   <Icon
-                    name="restaurant-outline"
+                    name="home-outline"
                     color={typeof color === "string" ? color : colors.accent}
                   />
                 ),

@@ -15,8 +15,8 @@ export function ProSheet({
     <Sheet
       visible={visible}
       onClose={onClose}
-      title="More room in your kitchen."
-      subtitle="Mise Pro turns a great recipe into a repeatable routine."
+      title="Mise Pro"
+      subtitle="More tools for planning and preparing your meals."
     >
       <View
         style={{
@@ -44,7 +44,7 @@ export function ProSheet({
           ],
           [
             "document-outline",
-            "Beautiful macro cards",
+            "PDF macro cards",
             "Share a printable PDF from your device.",
           ],
         ].map(([icon, title, detail]) => (
