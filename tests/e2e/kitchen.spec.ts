@@ -163,6 +163,43 @@ test("mobile layout and calorie scaling preview", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/cook");
   await expect(page.getByText("Meal builder")).toBeVisible();
+  const portionCard = page.getByTestId("portion-card");
+  for (const width of [320, 390, 768, 820, 1280]) {
+    await page.setViewportSize({ width, height: 844 });
+    await portionCard.scrollIntoViewIfNeeded();
+    // Layout follows the card's actual width, including the narrow desktop column.
+    await expect(async () => {
+      const card = await portionCard.boundingBox();
+      expect(card).not.toBeNull();
+      const elements = [
+        portionCard.getByRole("heading"),
+        portionCard.getByText("Choose your portions. Weigh the finished food if you like.", { exact: true }),
+        portionCard.getByRole("textbox", { name: "Number of portions", exact: true }),
+        portionCard.getByRole("textbox", { name: "Finished food weight (g) · optional", exact: true }),
+        portionCard.getByRole("button", { name: "Save recipe", exact: true }),
+        portionCard.getByRole("button", { name: "Record this batch", exact: true }),
+      ];
+      for (const element of elements) {
+        const box = await element.boundingBox();
+        expect(box).not.toBeNull();
+        expect(box!.x).toBeGreaterThanOrEqual(card!.x + 19);
+        expect(box!.x + box!.width).toBeLessThanOrEqual(card!.x + card!.width - 19);
+      }
+      const portions = await elements[2].boundingBox();
+      const weight = await elements[3].boundingBox();
+      const save = await elements[4].boundingBox();
+      const record = await elements[5].boundingBox();
+      if (width === 320 || width === 390 || width === 820) {
+        expect(weight!.y).toBeGreaterThan(portions!.y + portions!.height);
+        expect(record!.y).toBeGreaterThan(save!.y + save!.height);
+      } else {
+        expect(Math.abs(weight!.y - portions!.y)).toBeLessThanOrEqual(1);
+        expect(Math.abs(record!.y - save!.y)).toBeLessThanOrEqual(1);
+      }
+    }).toPass();
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await portionCard.scrollIntoViewIfNeeded();
   await page.screenshot({ path: "artifacts/mise-mobile.png", fullPage: true });
   await page.getByRole("tab", { name: "Settings" }).click();
   await setProPreview(page, true);

@@ -54,8 +54,14 @@ function KitchenEditor() {
     error,
   } = useKitchen();
   const draft = data!.draft;
-  const { width } = useWindowDimensions();
+  const { width, fontScale } = useWindowDimensions();
   const wide = width > 800;
+  const portionControlStyle = {
+    flexBasis: 220 * fontScale,
+    flexGrow: 1,
+    flexShrink: 1,
+    minWidth: 0,
+  };
   const pro = useBilling((state) => state.pro || state.preview);
   const params = useLocalSearchParams<{ action?: string }>();
   const [modal, setModal] = useState<
@@ -333,28 +339,18 @@ function KitchenEditor() {
               onPress={() => setModal("custom")}
             />
           </Card>
-          <Card>
-            <Row>
-              <View
-                style={{
-                  backgroundColor: colors.pale,
-                  padding: 10,
-                  borderRadius: 12,
-                }}
-              >
-                <Icon name="cube-outline" />
-              </View>
-              <View style={{ gap: 4 }}>
-                <Txt style={{ fontWeight: "600", fontSize: 17 }}>
-                  How many meals are you making?
-                </Txt>
-                <Muted>
-                  Choose your portions. Weigh the finished food if you like.
-                </Muted>
-              </View>
-            </Row>
-            <Row style={{ alignItems: "flex-start" }}>
+          <Card testID="portion-card">
+            <View style={{ gap: 6, minWidth: 0 }}>
+              <Txt accessibilityRole="header" style={{ fontWeight: "600", fontSize: 17, flexShrink: 1 }}>
+                How many meals are you making?
+              </Txt>
+              <Muted>
+                Choose your portions. Weigh the finished food if you like.
+              </Muted>
+            </View>
+            <Row style={{ alignItems: "flex-end", flexWrap: "wrap", gap: 16 }}>
               <Field
+                containerStyle={portionControlStyle}
                 label="Number of portions"
                 value={containers}
                 onChangeText={setContainers}
@@ -362,6 +358,7 @@ function KitchenEditor() {
                 onBlur={applyBatch}
               />
               <Field
+                containerStyle={portionControlStyle}
                 label="Finished food weight (g) · optional"
                 value={yieldText}
                 onChangeText={setYield}
@@ -399,12 +396,14 @@ function KitchenEditor() {
             )}
             <Row style={{ flexWrap: "wrap" }}>
               <Button
+                style={portionControlStyle}
                 label="Save recipe"
                 icon="bookmark-outline"
                 disabled={!draft.ingredients.length}
                 onPress={save}
               />
               <Button
+                style={portionControlStyle}
                 label="Record this batch"
                 variant="secondary"
                 icon="checkmark-circle-outline"

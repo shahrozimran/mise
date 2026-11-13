@@ -66,9 +66,10 @@ export function Muted({ children }: PropsWithChildren) {
 export function Card({
   children,
   style,
-}: PropsWithChildren<{ style?: ViewStyle }>) {
+  testID,
+}: PropsWithChildren<{ style?: ViewStyle; testID?: string }>) {
   const s = useStyles();
-  return <View style={[s.card, style]}>{children}</View>;
+  return <View testID={testID} style={[s.card, style]}>{children}</View>;
 }
 export function Row({
   children,
@@ -139,6 +140,8 @@ export function Button({
         style={{
           fontWeight: "600",
           fontSize: small ? 13 : 15,
+          flexShrink: 1,
+          textAlign: "center",
           color: dark
             ? colors.onAccent
             : variant === "danger"
@@ -154,12 +157,13 @@ export function Button({
 export function Field({
   label,
   error,
+  containerStyle,
   ...props
-}: TextInputProps & { label: string; error?: string }) {
+}: TextInputProps & { label: string; error?: string; containerStyle?: ViewStyle }) {
   const { colors } = useTheme();
   const s = useStyles();
   return (
-    <View style={{ gap: 7, flex: 1 }}>
+    <View style={[{ gap: 7, flex: 1, minWidth: 0 }, containerStyle]}>
       <Txt style={s.label}>{label}</Txt>
       <TextInput
         accessibilityLabel={label}

@@ -1,6 +1,12 @@
 # Mise build verification
 
-Verified on 13 November 2026.
+Latest verification: 14 November 2026.
+
+## 0.6.1 portion card responsiveness
+
+The portion card heading and description now stay within the card. Fields and save/record actions wrap based on available card width and the system font scale, stacking at phone widths and aligning inputs at the bottom when side by side. The decorative cube was removed. Button labels can wrap, and field containers can shrink within their parent.
+
+Mobile types/lint passed. The offline save/history workflow and portion/scaling workflow passed, including layout bounds and input/action alignment checks at widths 320, 390, 768, 820, and 1280. Welcome/short-screen search, barcode caching, and both system-theme workflows also passed. Empty-card previews were visually reviewed in both light and dark modes. Native device and enlarged system-font verification remain outstanding.
 
 ## 0.6.0 interface refinement
 
