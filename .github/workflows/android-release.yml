@@ -2,6 +2,7 @@ name: Android release
 
 on:
   push:
+    branches: [main]
     tags: ["v*"]
   workflow_dispatch:
     inputs:
@@ -13,16 +14,12 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: android-release-${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
-  cancel-in-progress: false
-
 jobs:
   checks:
     if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
     uses: ./.github/workflows/check.yml
     with:
-      ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+      ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.sha }}
 
   build:
     needs: checks
@@ -31,13 +28,18 @@ jobs:
     outputs:
       version: ${{ steps.metadata.outputs.version }}
       tag: ${{ steps.metadata.outputs.tag }}
+      commit: ${{ steps.metadata.outputs.commit }}
+      existing_tag: ${{ steps.metadata.outputs.existing_tag }}
     env:
       CI: "1"
       RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+      RELEASE_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.sha }}
+      RELEASE_MODE: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'automatic' || 'tag' }}
+      BUILD_NUMBER: ${{ github.run_number }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          ref: ${{ env.RELEASE_TAG }}
+          ref: ${{ env.RELEASE_REF }}
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
@@ -47,10 +49,12 @@ jobs:
       - name: Validate release version
         id: metadata
         run: node tools/release-info.mjs
-      - name: Require a tag on main's history
+      - name: Require the checked commit on main's history
         run: |
-          git show-ref --verify "refs/tags/$RELEASE_TAG"
-          test "$(git rev-list -n 1 "$RELEASE_TAG")" = "$(git rev-parse HEAD)"
+          if [ "$RELEASE_MODE" = tag ]; then
+            git show-ref --verify "refs/tags/$RELEASE_TAG"
+            test "$(git rev-list -n 1 "$RELEASE_TAG")" = "$(git rev-parse HEAD)"
+          fi
           git merge-base --is-ancestor HEAD origin/main
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
         with:
@@ -108,6 +112,8 @@ jobs:
       GH_REPO: ${{ github.repository }}
       RELEASE_TAG: ${{ needs.build.outputs.tag }}
       VERSION: ${{ needs.build.outputs.version }}
+      RELEASE_COMMIT: ${{ needs.build.outputs.commit }}
+      EXISTING_TAG: ${{ needs.build.outputs.existing_tag }}
     steps:
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
@@ -130,9 +136,13 @@ jobs:
 
           The workflow passed TypeScript, lint, domain/API tests, browser workflows, APK signature verification, and 16 KB native/ZIP alignment checks. SHA256SUMS.txt provides the APK checksum.
           EOF
+          tag_options=(--target "$RELEASE_COMMIT")
+          if [ "$EXISTING_TAG" = true ]; then
+            tag_options+=(--verify-tag)
+          fi
           gh release create "$RELEASE_TAG" \
             "release/mise-$VERSION-arm64.apk" \
             release/SHA256SUMS.txt release/native-alignment.json \
-            --verify-tag --prerelease --latest=false \
+            "${tag_options[@]}" --prerelease --latest=false \
             --title "Mise $VERSION · Android test build" \
             --notes-file release-notes.md

@@ -1,13 +1,17 @@
-import { readFileSync, appendFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, appendFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { releaseMetadata } from './release-metadata.mjs';
 
-const tag = process.env.RELEASE_TAG ?? '';
-const { expo } = JSON.parse(readFileSync(new URL('../apps/mobile/app.json', import.meta.url), 'utf8'));
-if (!/^v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(tag))
-  throw new Error('Release tags must look like v0.2.0.');
-if (tag !== `v${expo.version}`)
-  throw new Error(`Tag ${tag} must match apps/mobile/app.json version v${expo.version}.`);
-if (!Number.isInteger(expo.android.versionCode) || expo.android.versionCode < 1)
-  throw new Error('Set a positive integer Android versionCode before releasing.');
+const configPath = new URL('../apps/mobile/app.json', import.meta.url);
+const config = JSON.parse(readFileSync(configPath, 'utf8'));
+const result = releaseMetadata(config.expo, process.env);
+const commit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+if (process.env.BUILD_NUMBER) {
+  config.expo.version = result.version;
+  config.expo.android.versionCode = result.versionCode;
+  writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
+}
 if (process.env.GITHUB_OUTPUT)
-  appendFileSync(process.env.GITHUB_OUTPUT, `tag=${tag}\nversion=${expo.version}\n`);
-console.log(`Validated ${tag}, Android version code ${expo.android.versionCode}.`);
+  appendFileSync(process.env.GITHUB_OUTPUT,
+    `tag=${result.tag}\nversion=${result.version}\ncommit=${commit}\nexisting_tag=${result.existingTag}\n`);
+console.log(`Validated ${result.tag}, Android version code ${result.versionCode}, commit ${commit}.`);

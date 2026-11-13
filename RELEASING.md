@@ -1,12 +1,18 @@
 # Android test releases
 
-The [Android release workflow](https://github.com/shahrozimran/mise/actions/workflows/android-release.yml) builds and publishes an installable ARM64 APK when a `v*` tag is pushed. It can also be run manually for an existing version tag. No Expo account or repository secrets are needed for these offline test builds; publishing uses the workflow's built-in `GITHUB_TOKEN`.
+The [Android release workflow](https://github.com/shahrozimran/mise/actions/workflows/android-release.yml) automatically builds and publishes an installable ARM64 APK after **every push to `main`**. No manual version bump, tag, Expo account, or additional repository secret is required. Publishing uses the workflow's built-in `GITHUB_TOKEN`.
 
-## Publish a version
+## Automatic releases
+
+Push changes to `main` as usual. After checks pass, the workflow creates a tag such as `v0.2.1-build.5` at the exact pushed commit, then publishes its APK and verification files. The workflow run number makes each tag unique, even when the source app version stays the same. The APK's version name includes that build suffix; its Android version code is `100000 + workflow run number`, allowing newer cloud builds to update older test installs. Keep this workflow's identity and run counter when editing it.
+
+Version changes are applied only inside the build runner and are never committed back, so releasing cannot cause a push loop. Generated tags use `GITHUB_TOKEN` and do not start another release workflow. Pushes to feature branches and pull requests do not publish releases; merge them into `main` to release. Each push has an independent run, so a later push does not cancel an earlier pending release. Failed checks/builds do not publish an APK.
+
+## Optional named version releases
 
 1. Update `expo.version` and increment `expo.android.versionCode` in `apps/mobile/app.json`.
-2. Commit and push those changes to `main`.
-3. Create and push a matching version tag:
+2. Commit and push those changes to `main` (this also creates an automatic build release).
+3. Optionally create and push a matching version tag for a named release:
 
 ```sh
 git tag -a v0.2.1 -m "Mise 0.2.1"
@@ -15,7 +21,7 @@ git push origin v0.2.1
 
 Use the next version for later releases, for example `v0.3.0`. The workflow rejects a tag that disagrees with the checked-out app version or points outside `main`'s history. Existing published release assets are not overwritten; a duplicate release fails instead. To retry a failed build before publication, rerun its failed jobs in Actions or use **Run workflow** with the existing tag. Manual runs must use the main branch so the checks and selected tag both use trusted project code.
 
-The workflow first runs TypeScript, lint, domain/API tests, Expo Doctor, and the browser workflows against the selected tag, including for manual runs. It then generates Android using Expo, builds with Java 17 and the matching Android SDK/NDK, verifies the APK signature and 16 KB native/ZIP alignment, and checks the downloaded artifact's checksum before publication. Action versions are pinned to reviewed commit SHAs.
+The workflow first runs TypeScript, lint, domain/API tests, release-numbering tests, Expo Doctor, and browser workflows against the exact pushed commit or selected tag. It then generates Android using Expo, builds with Java 17 and the matching Android SDK/NDK, verifies the APK signature and 16 KB native/ZIP alignment, and checks the downloaded artifact's checksum before publication. Action versions are pinned to reviewed commit SHAs.
 
 Each successful run creates a **prerelease** containing:
 
