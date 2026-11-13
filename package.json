@@ -1,0 +1,30 @@
+{
+  "name": "mise-macro-architect",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "start": "npm run start --workspace @mise/mobile",
+    "web": "npm run web --workspace @mise/mobile",
+    "android": "npm run android --workspace @mise/mobile",
+    "prebuild:android": "npm run prebuild:android --workspace @mise/mobile",
+    "api": "npm run dev --workspace @mise/api",
+    "test": "tsx --test packages/domain/tests/*.test.ts apps/api/tests/*.test.ts",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspace @mise/mobile",
+    "check": "npm run typecheck && npm run lint && npm test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@resvg/resvg-js": "^2.6.2",
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "~6.0.3"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

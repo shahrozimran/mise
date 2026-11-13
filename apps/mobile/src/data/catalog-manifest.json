@@ -1,0 +1,8 @@
+{
+  "version": "usda-sr-2018-04-v1",
+  "count": 7793,
+  "source": "USDA FoodData Central SR Legacy 2018-04",
+  "license": "CC0-1.0",
+  "url": "https://fdc.nal.usda.gov/download-datasets/",
+  "sha256": "4e10cb31b14dac0eacf997cd8e6fed0c717e6eeb5cdfb490ca2d82800bd59e57"
+}
