@@ -7,7 +7,7 @@
 
 An offline-first React Native Android app for composing recipes, calculating nutrition, and dividing cooked batches into portions. This repository contains a working mobile app, a browser preview of the same React Native screens, a shared calculation/parser package, and an optional food lookup and subscription backend.
 
-An ARM64 test APK is available at `artifacts/mise-0.2.0-arm64.apk` (about 40 MB). It was built with the release configuration and the template's **debug signing certificate**, for sideload testing only. It is not a Play Store submission build. Build verification and the remaining device/configuration checks are recorded in `BUILD_STATUS.md`.
+Download ARM64 APKs from [GitHub Releases](https://github.com/shahrozimran/mise/releases). Local verification also produced `artifacts/mise-0.2.0-arm64.apk` (about 40 MB); generated artifacts are excluded from Git. Test builds use the release configuration and the template's **debug signing certificate**, for sideload testing only. They are not Play Store submission builds. Build verification and the remaining device/configuration checks are recorded in `BUILD_STATUS.md`.
 
 ## Run the app
 

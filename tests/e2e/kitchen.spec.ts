@@ -60,6 +60,23 @@ async function backToMeal(page: import("@playwright/test").Page) {
     .click();
 }
 
+async function setProPreview(
+  page: import("@playwright/test").Page,
+  enabled: boolean,
+) {
+  const toggle = page.getByRole("button", {
+    name: /^(Preview Pro tools in this development build|Turn off development Pro preview)$/,
+  });
+  await expect(toggle).toBeVisible();
+  const active = (await toggle.getAttribute("aria-label")) === "Turn off development Pro preview";
+  if (active !== enabled) await toggle.click();
+  await expect(toggle).toHaveAccessibleName(
+    enabled
+      ? "Turn off development Pro preview"
+      : "Preview Pro tools in this development build",
+  );
+}
+
 test("complete offline dish, persistent library, portions, and immutable batch history", async ({
   page,
 }) => {
@@ -147,10 +164,7 @@ test("mobile layout and calorie scaling preview", async ({ page }) => {
   await expect(page.getByText("Let’s build your meal.")).toBeVisible();
   await page.screenshot({ path: "artifacts/mise-mobile.png", fullPage: true });
   await page.getByRole("tab", { name: "Settings" }).click();
-  const previewButton = page.getByRole("button", {
-    name: /Preview Pro tools in this development build/,
-  });
-  if (await previewButton.isVisible()) await previewButton.click();
+  await setProPreview(page, true);
   await expect(
     page.getByText(
       "Development Pro preview is active. No purchase has been made.",
@@ -181,10 +195,7 @@ test("grocery generation aggregates weights, subtracts pantry, and persists chec
   await page.goto("/cook");
   await page.getByRole("button", { name: "Save recipe", exact: true }).click();
   await page.getByRole("tab", { name: "Settings" }).click();
-  const preview = page.getByRole("button", {
-    name: /Preview Pro tools in this development build/,
-  });
-  if (await preview.isVisible()) await preview.click();
+  await setProPreview(page, true);
   await page.getByRole("tab", { name: "Shopping" }).click();
   await page
     .getByRole("checkbox", {
@@ -272,10 +283,7 @@ test("macro card opens a printable document with recipe nutrition", async ({
   });
   await page.goto("/cook");
   await page.getByRole("tab", { name: "Settings" }).click();
-  const preview = page.getByRole("button", {
-    name: /Preview Pro tools in this development build/,
-  });
-  if (await preview.isVisible()) await preview.click();
+  await setProPreview(page, true);
   await backToMeal(page);
   const popupEvent = page.waitForEvent("popup");
   await page
@@ -315,11 +323,7 @@ test("free recipe slots block only the fourth new master save", async ({
 }) => {
   await page.goto("/cook");
   await page.getByRole("tab", { name: "Settings" }).click();
-  const disablePreview = page.getByRole("button", {
-    name: "Turn off development Pro preview",
-    exact: true,
-  });
-  if (await disablePreview.isVisible()) await disablePreview.click();
+  await setProPreview(page, false);
   await backToMeal(page);
   for (let index = 0; index < 3; index++) {
     await page

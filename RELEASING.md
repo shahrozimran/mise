@@ -9,13 +9,13 @@ The [Android release workflow](https://github.com/shahrozimran/mise/actions/work
 3. Create and push a matching version tag:
 
 ```sh
-git tag -a v0.2.0 -m "Mise 0.2.0"
-git push origin v0.2.0
+git tag -a v0.2.1 -m "Mise 0.2.1"
+git push origin v0.2.1
 ```
 
 Use the next version for later releases, for example `v0.3.0`. The workflow rejects a tag that disagrees with the checked-out app version or points outside `main`'s history. Existing published release assets are not overwritten; a duplicate release fails instead. To retry a failed build before publication, rerun its failed jobs in Actions or use **Run workflow** with the existing tag. Manual runs must use the main branch so the checks and selected tag both use trusted project code.
 
-The workflow first runs TypeScript, lint, domain/API tests, Expo Doctor, and the browser workflows. It then generates Android using Expo, builds with Java 17 and the matching Android SDK/NDK, verifies the APK signature and 16 KB native/ZIP alignment, and checks the downloaded artifact's checksum before publication. Action versions are pinned to reviewed commit SHAs.
+The workflow first runs TypeScript, lint, domain/API tests, Expo Doctor, and the browser workflows against the selected tag, including for manual runs. It then generates Android using Expo, builds with Java 17 and the matching Android SDK/NDK, verifies the APK signature and 16 KB native/ZIP alignment, and checks the downloaded artifact's checksum before publication. Action versions are pinned to reviewed commit SHAs.
 
 Each successful run creates a **prerelease** containing:
 

@@ -21,6 +21,8 @@ jobs:
   checks:
     if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
     uses: ./.github/workflows/check.yml
+    with:
+      ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
 
   build:
     needs: checks
