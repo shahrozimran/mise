@@ -13,11 +13,14 @@ import {
   dietOptions,
   goalOptions,
   Preferences,
+  PersonalDetails,
+  personalDetailsSchema,
 } from "@mise/domain";
 import { useKitchen } from "../data/store";
 import { BrandMark, Button, useTheme, Field, Icon, Muted, Row, Txt } from "./ui";
 import { Enter, TouchCard } from "./motion";
 import { MealPhoto } from "./MealPhoto";
+import { PersonalDetailsIntro } from "./PersonalDetails";
 
 const titles = [
   "What brings you here?",
@@ -47,6 +50,9 @@ export function Onboarding({
   const [step, setStep] = useState(editing ? 0 : data.onboardingStep);
   const [preferences, setPreferences] = useState<Preferences>(
     data.preferences ?? defaultPreferences(),
+  );
+  const [profileStep, setProfileStep] = useState(
+    !editing && !personalDetailsSchema.safeParse(preferences).success,
   );
   const [error, setError] = useState("");
   const scroll = useRef<React.ComponentRef<typeof ScrollView>>(null);
@@ -86,6 +92,13 @@ export function Onboarding({
     setStep(nextStep);
     scroll.current?.scrollTo({ y: 0, animated: false });
   }
+  function saveDetails(details: PersonalDetails) {
+    const updated = { ...preferences, ...details, completedAt: null };
+    useKitchen.getState().commit((d) => ({ ...d, preferences: updated }));
+    setPreferences(updated);
+    setProfileStep(false);
+  }
+  if (profileStep) return <PersonalDetailsIntro initial={preferences} onSave={saveDetails} />;
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <View style={o.top}>
@@ -144,18 +157,18 @@ export function Onboarding({
             <Row style={{ justifyContent: "space-between" }}>
               <Txt style={o.step}>LET’S MAKE IT PERSONAL</Txt>
               <Txt style={{ fontSize: 12, color: colors.muted }}>
-                {step + 1} of 5
+                {editing ? step + 1 : step + 2} of {editing ? 5 : 6}
               </Txt>
             </Row>
             <Row style={{ gap: 6 }}>
-              {titles.map((_, index) => (
+              {(editing ? titles : ["Profile", ...titles]).map((_, index) => (
                 <View
                   key={index}
                   style={{
                     height: 5,
                     borderRadius: 4,
                     flex: 1,
-                    backgroundColor: index <= step ? colors.accent : colors.pale,
+                    backgroundColor: index <= step + (editing ? 0 : 1) ? colors.accent : colors.pale,
                   }}
                 />
               ))}
@@ -467,13 +480,6 @@ export function Onboarding({
                       </Txt>
                     )}
                   </View>
-                  <Field
-                    label="What should we call you? (optional)"
-                    value={preferences.name}
-                    onChangeText={(name) => change({ name })}
-                    maxLength={40}
-                    placeholder="Your first name"
-                  />
                   <Muted>
                     Suggestions help you discover meals. They don’t calculate a
                     personal calorie prescription or promise a weight change.
@@ -490,12 +496,12 @@ export function Onboarding({
           </ScrollView>
           <View style={[o.footer, !editing && { paddingBottom: 22 + insets.bottom }]}>
             <Row>
-              {step > 0 && (
+              {(step > 0 || !editing) && (
                 <Button
                   label="Back"
                   variant="secondary"
                   icon="arrow-back"
-                  onPress={() => next(-1)}
+                  onPress={() => step === 0 ? setProfileStep(true) : next(-1)}
                 />
               )}
               <View style={{ flex: 1 }}>

@@ -42,6 +42,7 @@ export default function Home() {
   const preferences = data.preferences ?? defaultPreferences();
   const goal = goalOptions.find((g) => g.id === preferences.goal)!;
   const diet = dietOptions.find((d) => d.id === preferences.diet)!;
+  const initial = Array.from(preferences.name.trim())[0]?.toUpperCase();
   const suggestions = recommendMeals(preferences, foods);
   const wide = useWindowDimensions().width >= 850;
   const [editing, setEditing] = useState(false);
@@ -82,8 +83,8 @@ export default function Home() {
         </Row>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Edit preferences"
-          onPress={() => setEditing(true)}
+          accessibilityLabel="Open profile settings"
+          onPress={() => router.navigate("/settings")}
           style={{
             backgroundColor: colors.pale,
             width: 44,
@@ -93,9 +94,7 @@ export default function Home() {
             justifyContent: "center",
           }}
         >
-          <Txt style={{ fontWeight: "600", color: colors.accent }}>
-            {preferences.name.trim().charAt(0).toUpperCase() || "You"}
-          </Txt>
+          {initial ? <Txt style={{ fontWeight: "600", color: colors.accent }}>{initial}</Txt> : <Icon name="person-outline" size={19} />}
         </Pressable>
       </Row>
       <View style={{marginBottom:18}}><ConnectionStatus /></View>

@@ -98,7 +98,16 @@ export interface Preferences {
   servings: number;
   experience: "new" | "comfortable";
   name: string;
+  age: number | null;
+  weightKg: number | null;
+  heightCm: number | null;
   completedAt: string | null;
+}
+export interface PersonalDetails {
+  name: string;
+  age: number;
+  weightKg: number;
+  heightCm: number;
 }
 export interface AppData {
   schemaVersion: 1;

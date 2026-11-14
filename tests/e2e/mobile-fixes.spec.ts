@@ -1,7 +1,9 @@
 import {test,expect} from '@playwright/test';
+import { completePersonalDetails } from './helpers/profile';
 
 async function start(page: import('@playwright/test').Page) {
   await page.goto('/');
+  await completePersonalDetails(page);
   await page.getByRole('button',{name:'Skip setup for now'}).click();
   await page.getByRole('button',{name:'Build my own meal',exact:true}).click();
 }
@@ -12,6 +14,7 @@ test('welcome opens smoothly and a short phone viewport keeps food suggestions u
   await expect(page.frameLocator('iframe').locator('body')).toHaveAttribute('data-settled','true');
   for(const enter of await page.getByTestId('entrance-animation').all()) await expect(enter).toHaveCSS('opacity','1');
   await page.screenshot({path:'artifacts/mise-welcome-mobile.png'});
+  await completePersonalDetails(page);
   await page.getByRole('button',{name:'Skip setup for now'}).click();
   await page.getByRole('button',{name:'Build my own meal',exact:true}).click();
   await page.getByRole('button',{name:'Add ingredient',exact:true}).click();

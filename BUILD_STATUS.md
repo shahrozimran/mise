@@ -2,6 +2,12 @@
 
 Latest verification: 14 November 2026.
 
+## 0.7.0 personal profile and Settings
+
+New installations enter a required name, age, current weight (kg), and height (cm) before the existing five preference steps. The Home avatar displays the saved initial and opens Settings. A separate profile editor validates changes, supports cancellation, and preserves meal preferences. The Good data card was removed; attribution remains in Privacy and data use. The ingredient picker no longer displays the food-count / Wi-Fi subtitle. Existing completed setups remain usable, with missing personal measurements represented as unknown until entered in Settings. Details are included in local backups.
+
+Workspace type checks/lint, 78 domain/API tests, all 17 browser workflows, and Android Hermes export passed. Checks cover required fields, resumed preferences, avatar navigation, invalid age input, cancellation, comma-decimal weight entry, offline saving, reload persistence, and older-preference/backup migration. Phone and desktop profile screens and both appearances were visually reviewed. Native keyboard, system font scaling, and device-runtime validation remain outstanding.
+
 ## 0.6.1 portion card responsiveness
 
 The portion card heading and description now stay within the card. Fields and save/record actions wrap based on available card width and the system font scale, stacking at phone widths and aligning inputs at the bottom when side by side. The decorative cube was removed. Button labels can wrap, and field containers can shrink within their parent.

@@ -51,6 +51,12 @@ export const recipeSchema = z.object({
   notes: z.string().max(20000),
   updatedAt: z.iso.datetime(),
 });
+export const personalDetailsSchema = z.object({
+  name: z.string().trim().min(1, "Enter your name.").max(40, "Use 40 characters or fewer."),
+  age: z.number().int().min(1).max(120),
+  weightKg: z.number().finite().min(1).max(700),
+  heightCm: z.number().finite().min(30).max(300),
+});
 export const preferencesSchema = z.object({
   goal: z.enum(["lose", "gain", "muscle", "balanced", "prep"]),
   diet: z.enum(["any", "vegetarian", "vegan", "pescatarian"]),
@@ -74,6 +80,9 @@ export const preferencesSchema = z.object({
   servings: z.number().int().min(1).max(12),
   experience: z.enum(["new", "comfortable"]),
   name: z.string().max(40),
+  age: personalDetailsSchema.shape.age.nullable().default(null),
+  weightKg: personalDetailsSchema.shape.weightKg.nullable().default(null),
+  heightCm: personalDetailsSchema.shape.heightCm.nullable().default(null),
   completedAt: z.iso.datetime().nullable(),
 });
 export const appDataSchema = z.object({

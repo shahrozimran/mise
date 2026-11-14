@@ -7,6 +7,7 @@ import {
   Food,
   mealIdeas,
   preferencesSchema,
+  personalDetailsSchema,
   recipeFromIdea,
   recommendMeals,
 } from "../src";
@@ -115,6 +116,38 @@ describe("personalization and profile migration", () => {
     assert.throws(() =>
       preferencesSchema.parse({ ...defaultPreferences(), servings: 0 }),
     );
+  });
+  it("validates required personal details without inventing missing values", () => {
+    const details = { name: "  Amina  ", age: 28, weightKg: 68.5, heightCm: 170 };
+    assert.deepEqual(personalDetailsSchema.parse(details), { ...details, name: "Amina" });
+    for (const invalid of [
+      { ...details, name: "  " },
+      { ...details, age: 0 },
+      { ...details, age: 28.5 },
+      { ...details, weightKg: NaN },
+      { ...details, heightCm: Infinity },
+      { ...details, weightKg: -5 },
+      { ...details, heightCm: 0 },
+    ]) assert.equal(personalDetailsSchema.safeParse(invalid).success, false);
+  });
+  it("migrates existing preferences without losing their name or meal choices", () => {
+    const { age, weightKg, heightCm, ...legacy } = { ...defaultPreferences(), name: "Sam", diet: "vegan" as const };
+    const migrated = preferencesSchema.parse(legacy);
+    assert.equal(migrated.name, "Sam");
+    assert.equal(migrated.diet, "vegan");
+    assert.equal(migrated.age, null);
+    assert.equal(migrated.weightKg, null);
+    assert.equal(migrated.heightCm, null);
+  });
+  it("retains personal details in a validated backup", () => {
+    const recipe = recipeFromIdea(mealIdeas[0], foods, 4, () => "profile-backup");
+    const preferences = { ...defaultPreferences(), name: "Amina", age: 28, weightKg: 68.5, heightCm: 170, completedAt: new Date().toISOString() };
+    const restored = appDataSchema.parse(JSON.parse(JSON.stringify({
+      schemaVersion: 1, draft: recipe, recipes: [recipe], batches: [], customFoods: [],
+      grocerySelection: {}, groceryChecked: [], settings: { convention: "us" }, preferences,
+    })));
+    assert.deepEqual(restored.preferences, preferences);
+    assert.equal(restored.recipes[0].id, "profile-backup");
   });
   it("adds profile defaults to older backups while retaining recipes", () => {
     const recipe = recipeFromIdea(mealIdeas[0], foods, 4, () => "legacy");

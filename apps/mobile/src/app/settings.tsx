@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Modal, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { AppData, dietOptions, goalOptions } from "@mise/domain";
+import { AppData, defaultPreferences, dietOptions, goalOptions } from "@mise/domain";
 import { Onboarding } from "../components/Onboarding";
 import { blankRecipe, initialData, useKitchen } from "../data/store";
 import { catalogManifest } from "../data/catalog";
@@ -22,6 +22,7 @@ import {
   Txt,
 } from "../components/ui";
 import { ProSheet } from "../components/ProSheet";
+import { PersonalDetailsForm } from "../components/PersonalDetails";
 
 export default function Settings() {
   const {mode, colors}=useTheme();
@@ -35,6 +36,8 @@ export default function Settings() {
   const [busy, setBusy] = useState(false);
   const [privacy, setPrivacy] = useState(false);
   const [preferencesOpen, setPreferencesOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const preferences = data!.preferences ?? defaultPreferences();
   async function backup() {
     setBusy(true);
     try {
@@ -67,6 +70,17 @@ export default function Settings() {
         </View>
       )}
       <View style={{ gap: 20 }}>
+        <Card testID="profile-card">
+          <Eyebrow>PROFILE</Eyebrow>
+          <Txt accessibilityRole="header" style={{ fontSize: 22, fontWeight: "600" }}>Personal details</Txt>
+          <Txt style={{ fontSize: 19, fontWeight: "600" }}>{preferences.name.trim() || "Complete your profile"}</Txt>
+          <Row style={{ flexWrap: "wrap", gap: 16 }}>
+            <Muted>{preferences.age === null ? "Age not set" : `${preferences.age} years`}</Muted>
+            <Muted>{preferences.weightKg === null ? "Weight not set" : `${preferences.weightKg} kg`}</Muted>
+            <Muted>{preferences.heightCm === null ? "Height not set" : `${preferences.heightCm} cm`}</Muted>
+          </Row>
+          <Button label="Edit profile" variant="secondary" onPress={() => setProfileOpen(true)} />
+        </Card>
         <Card>
           <Eyebrow>APPEARANCE</Eyebrow>
           <Txt style={{fontSize:20,fontWeight:"600"}}>Follows your phone</Txt>
@@ -190,23 +204,8 @@ export default function Settings() {
           </Row>
           <Muted>
             Backups contain your recipes, custom foods, batches, grocery list,
-            and settings. Subscription access is restored separately through
+            personal details, and settings. Subscription access is restored separately through
             Google Play.
-          </Muted>
-        </Card>
-        <Card>
-          <Eyebrow>GOOD DATA, CLEAR LIMITS</Eyebrow>
-          <Txt style={{ fontSize: 21, fontWeight: "500" }}>
-            {catalogManifest.count.toLocaleString()} foods. Ready offline.
-          </Txt>
-          <Muted>
-            U.S. Department of Agriculture, Agricultural Research Service.
-            FoodData Central · SR Legacy, April 2018 · public-domain / CC0 data.
-          </Muted>
-          <Muted>
-            Catalog: {catalogManifest.version}. Custom food values come from the
-            labels you enter. Nutrition estimates depend on food selection,
-            edible weight, and how evenly the dish is portioned.
           </Muted>
           <Button
             label="Privacy and data use"
@@ -230,6 +229,15 @@ export default function Settings() {
         </Card>
       </View>
       {proSheet && <ProSheet visible onClose={() => setProSheet(false)} />}
+      {profileOpen && (
+        <Sheet visible title="Edit profile" subtitle="Update your personal details. Your food preferences stay as they are." onClose={() => setProfileOpen(false)}>
+          <PersonalDetailsForm initial={preferences} submitLabel="Save profile" onSave={(details) => {
+            commit((d) => ({ ...d, preferences: { ...(d.preferences ?? defaultPreferences()), ...details } }));
+            setProfileOpen(false);
+            setMessage("Profile updated.");
+          }} />
+        </Sheet>
+      )}
       {preferencesOpen && (
         <Modal
           visible
@@ -307,14 +315,14 @@ export default function Settings() {
           onClose={() => setPrivacy(false)}
         >
           <Txt>
-            Your recipe text, ingredient lists, saved batches, and PDF
+            Your name, age, weight, height, recipe text, ingredient lists, saved batches, and PDF
             generation stay on your device. The app does not include analytics
             or advertising.
           </Txt>
           <Txt>
             If you choose online search or barcode lookup, your search query or
-            barcode is sent to the configured Mise API and USDA FoodData
-            Central. Selected foods are cached on your device.
+            barcode is sent to the configured Mise API / USDA FoodData Central,
+            or the public Open Food Facts service. Your personal details are not included in those requests. Selected foods are cached on your device.
           </Txt>
           <Txt>
             Google Play processes payments. A configured verification service
@@ -331,6 +339,12 @@ export default function Settings() {
             Your backup contains your personal recipe collection. Store it
             safely and share it only with people you choose.
           </Notice>
+          <Muted>
+            Offline catalog: {catalogManifest.count.toLocaleString()} foods · {catalogManifest.version}.
+            U.S. Department of Agriculture, Agricultural Research Service.
+            FoodData Central · SR Legacy, April 2018 · public-domain / CC0 data.
+            Nutrition estimates depend on food selection, edible weight, and portioning.
+          </Muted>
         </Sheet>
       )}
     </Page>

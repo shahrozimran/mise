@@ -82,6 +82,9 @@ export function defaultPreferences(): Preferences {
     servings: 4,
     experience: "new",
     name: "",
+    age: null,
+    weightKg: null,
+    heightCm: null,
     completedAt: null,
   };
 }

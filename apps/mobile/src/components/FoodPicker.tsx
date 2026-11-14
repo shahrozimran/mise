@@ -103,7 +103,7 @@ export function FoodPicker({
       subtitle={
         selected
           ? "Choose how you measured it. We’ll handle the grams."
-          : `${foods.length.toLocaleString()} foods, ready without Wi-Fi.`
+          : undefined
       }
     >
       {error ? <Notice error>{error}</Notice> : null}

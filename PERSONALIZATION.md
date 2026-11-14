@@ -1,24 +1,27 @@
 # Personalized kitchen experience
 
-Implemented in version 0.2.0.
+Introduced in version 0.2.0; personal details added in 0.7.0.
 
 ## First install
 
-Every new installation opens a five-step setup before the main tabs. Existing users are also invited to set preferences; existing recipes and batches remain intact.
+Every new installation opens a six-step setup before the main tabs. Existing saved recipes and batches remain intact.
 
-1. Choose a goal: lose weight, gain weight, build muscle, eat more balanced, or make cooking easier.
-2. Choose an eating style: everything, vegetarian, vegan, or pescatarian.
-3. Select ingredient exclusions and optionally enter other avoided foods.
-4. Choose available cooking time, usual portions, and cooking confidence.
-5. Review the choices and optionally add a first name.
+1. Enter a name, whole-number age, current weight in kilograms, and height in centimeters. All four fields are required before continuing to preferences.
+2. Choose a goal: lose weight, gain weight, build muscle, eat more balanced, or make cooking easier.
+3. Choose an eating style: everything, vegetarian, vegan, or pescatarian.
+4. Select ingredient exclusions and optionally enter other avoided foods.
+5. Choose available cooking time, usual portions, and cooking confidence.
+6. Review the choices.
 
-Continue and Back save setup progress locally. Skip finishes with the current choices. The Home avatar and Settings reopen the setup; Cancel discards edits, and Save applies them. Names and preferences stay in the local app state and portable backup. No account is needed.
+Continue saves the personal details locally; Continue and Back retain preference progress. After the details step, Skip finishes with the current meal choices. The Home avatar shows the first character of the saved name and opens Settings. A neutral profile icon is used for legacy users who have not entered a name. Settings provides a separate Edit profile dialog and a Change my preferences flow; closing either discards unsaved edits. Personal details and preferences stay in local state and portable backups. No account is needed.
+
+Older preferences and backups load with unknown age, weight, and height represented by null values. Existing users who completed setup are not forced through it again; they can complete their profile in Settings. Personal details do not change the existing recommendation formula or generate a calorie prescription. The former Good data card is removed from Settings; source attribution remains available in Privacy and data use.
 
 ## Home and meal building
 
 Home offers two prominent actions: build a meal or paste an ingredient list. A current draft can be continued. Starting a different meal requires an explicit replacement choice if the draft has ingredients.
 
-The first three matching meal ideas appear as illustrated cards. Each shows its reason, cooking time, calories, and protein per portion. Opening an idea reveals ingredients and amounts; Use this recipe creates an editable draft scaled to the preferred portion count. Its instructions are stored in cooking notes. Finished cooked yield is left blank until measured.
+The first three matching meal ideas appear as photo cards. Each shows its reason, cooking time, calories, and protein per portion. Opening an idea reveals ingredients and amounts; Use this recipe creates an editable draft scaled to the preferred portion count. Its instructions are stored in cooking notes. Finished cooked yield is left blank until measured.
 
 The meal builder uses plain labels, quick gram amounts, optional notes, and expandable source/advanced-tool details. Nutrition and equal portions work without a kitchen scale. A small help sheet explains calories, nutrients, and batch portions.
 
@@ -32,7 +35,7 @@ The collection is small and ingredient-name matching does not understand every s
 
 ## Motion and accessibility
 
-Native React Native Animated provides short fade/slide entrances and spring press feedback. Selection is also conveyed through labels, icons, borders, and radio/checkbox state. Reduced-motion system settings suppress these effects. Native view illustrations are bundled and work offline. Three.js is unnecessary for these interactions and would add rendering complexity to the Android app.
+Native React Native Animated provides short fade/slide entrances and spring press feedback. Selection is also conveyed through labels, icons, borders, and radio/checkbox state. Reduced-motion system settings suppress these effects. Meal photos are bundled and work offline. Three.js is limited to the welcome scene; setup cards use native animation.
 
 Responsive layouts, scrollable cards, persistent navigation controls, and bottom safe-area spacing support phone and larger screens. Browser checks cover phone layouts and reduced motion; native TalkBack, large font scaling, keyboard behavior, and low-end device performance still need device validation.
 

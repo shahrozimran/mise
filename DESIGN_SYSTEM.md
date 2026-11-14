@@ -1,6 +1,8 @@
 # Mise · interface and system appearance
 
-Version 0.6.0 follows the device appearance automatically using React Native `useColorScheme`. Expo is configured with `userInterfaceStyle: automatic`; no saved manual override forces the application into one mode.
+Version 0.7.0 follows the device appearance automatically using React Native `useColorScheme`. Expo is configured with `userInterfaceStyle: automatic`; no saved manual override forces the application into one mode.
+
+The first-run profile step collects a required name, age, weight in kg, and height in cm before preference selection. Settings separates personal details from food preferences. The Home avatar shows a saved-name initial and navigates to Settings; legacy users with no name see a neutral profile icon. Forms use visible units, inline validation, scrollable layouts, and explicit saving. The Good data card has been removed from the Settings overview.
 
 ## Interface refinement
 
