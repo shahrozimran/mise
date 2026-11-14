@@ -31,6 +31,7 @@ export interface Food {
   brand?: string;
   ingredientsText?: string;
   allergensText?: string;
+  requiresLabel?: boolean;
 }
 export interface Ingredient {
   id: string;

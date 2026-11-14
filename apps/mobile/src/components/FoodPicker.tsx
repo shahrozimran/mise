@@ -14,6 +14,7 @@ import { foods } from "../data/catalog";
 import { id, useKitchen } from "../data/store";
 import { API_URL, request, searchOnline, searchProducts } from "../services/api";
 import { useOffline } from "./ConnectionStatus";
+import { CustomFood } from "./CustomFood";
 import {
   Button,
   Chip,
@@ -64,6 +65,7 @@ export function FoodPicker({
   const [busy, setBusy] = useState(false);
   const [showSource, setShowSource] = useState(false);
   const [showIngredients, setShowIngredients] = useState(false);
+  const [editingLabel, setEditingLabel] = useState(false);
   const list = useMemo(
     () => searchFoods([...data.customFoods, ...foods], query, 24),
     [query, data.customFoods],
@@ -96,6 +98,7 @@ export function FoodPicker({
     setSelected(food);
     setMeasureId("g");
   }
+  if (selected && editingLabel) return <CustomFood visible initialFood={selected} onClose={() => setEditingLabel(false)} onSaved={(food) => { setSelected(food); setMeasureId("g"); setEditingLabel(false); }} />;
   return (
     <Sheet
       visible={visible}
@@ -128,10 +131,10 @@ export function FoodPicker({
               {selected.name}
             </Txt>
             {!!selected.brand && <Muted>{selected.brand}</Muted>}
-            <Muted>
+            {selected.requiresLabel ? <Muted>Nutrition must be completed from the package label.</Muted> : <Muted>
               {selected.state} · {formatNumber(selected.nutrients.kcal, 0)} kcal
               per 100 g
-            </Muted>
+            </Muted>}
           </View>
           <Field
             label="Quantity"
@@ -140,6 +143,7 @@ export function FoodPicker({
             keyboardType="decimal-pad"
             placeholder="e.g. 150 or 1/2"
           />
+          {selected.requiresLabel && <Button label="Complete package label" onPress={() => setEditingLabel(true)} />}
           {!!selected.ingredientsText && <>
             <Button label={showIngredients ? "Hide package ingredients" : "Show package ingredients"} small variant="ghost" onPress={() => setShowIngredients(!showIngredients)} />
             {showIngredients && <Muted>{selected.ingredientsText}</Muted>}
@@ -198,7 +202,7 @@ export function FoodPicker({
           <Button
             label={existing ? "Update ingredient" : "Add to dish"}
             icon="add"
-            disabled={!grams}
+            disabled={!grams || !!selected.requiresLabel}
             onPress={() => {
               try {
                 const item = makeIngredient(

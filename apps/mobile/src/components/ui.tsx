@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
+import { PropsWithChildren, ReactNode, useContext, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Keyboard,
@@ -17,6 +17,7 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ConnectionStatus } from "./ConnectionStatus";
+import { InputHandle, KeyboardScroll, RevealInputContext } from "./KeyboardScroll";
 
 import { useTheme, themes, ThemeColors } from "./theme";
 export { useTheme } from "./theme";
@@ -158,18 +159,23 @@ export function Field({
   label,
   error,
   containerStyle,
+  inputRef,
   ...props
-}: TextInputProps & { label: string; error?: string; containerStyle?: ViewStyle }) {
+}: TextInputProps & { label: string; error?: string; containerStyle?: ViewStyle; inputRef?: (input: InputHandle | null) => void }) {
   const { colors } = useTheme();
   const s = useStyles();
+  const input = useRef<InputHandle>(null);
+  const reveal = useContext(RevealInputContext);
   return (
-    <View style={[{ gap: 7, flex: 1, minWidth: 0 }, containerStyle]}>
+    <View onLayout={() => { if (input.current?.isFocused()) reveal(input.current); }} style={[{ gap: 7, flex: 1, minWidth: 0 }, containerStyle]}>
       <Txt style={s.label}>{label}</Txt>
       <TextInput
+        ref={(node) => { input.current = node; inputRef?.(node); }}
         accessibilityLabel={label}
         selectionColor={colors.accent}
         placeholderTextColor={colors.muted}
         {...props}
+        onFocus={(event) => { reveal(input.current); props.onFocus?.(event); }}
         style={[
           s.input,
           props.multiline && { minHeight: 110, textAlignVertical: "top" },
@@ -332,14 +338,15 @@ export function Sheet({
           {!!subtitle && (
             <Txt style={[s.muted, { marginBottom: 16 }]}>{subtitle}</Txt>
           )}
-          <ScrollView
+          <KeyboardScroll
+            reserveKeyboardSpace={false}
             style={{ flex: 1, minHeight: 0 }}
             keyboardDismissMode="on-drag"
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={{ gap: 16, paddingBottom: 18 }}
           >
             {children}
-          </ScrollView>
+          </KeyboardScroll>
         </View>
       </View>
     </Modal>

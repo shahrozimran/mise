@@ -144,8 +144,10 @@ test('a liquid without verified gram nutrition can be saved from a measured pack
   await page.getByRole('button',{name:'Scan barcode or QR code',exact:true}).click();
   await page.getByRole('textbox',{name:'Barcode or QR link'}).fill('3017620422003');
   await page.getByRole('button',{name:'Find product',exact:true}).click();
-  await expect(page.getByText(/no usable gram-based nutrition/)).toBeVisible();
-  await page.getByRole('button',{name:'Add from package label',exact:true}).click();
+  await expect(page.getByText(/online record does not have usable gram-based nutrition/)).toBeVisible();
+  await expect(page.getByRole('button',{name:'Choose amount',exact:true})).toHaveCount(0);
+  await page.getByRole('button',{name:'Complete package label',exact:true}).click();
+  await expect(page.getByRole('textbox',{name:'Label serving weight (g)',exact:true})).toHaveValue('');
   await page.getByRole('textbox',{name:'Food name',exact:true}).fill('Milk, measured');
   await page.getByRole('textbox',{name:'Label serving weight (g)',exact:true}).fill('206');
   await page.getByRole('textbox',{name:'Calories (kcal) per label serving',exact:true}).fill('100');
@@ -154,7 +156,42 @@ test('a liquid without verified gram nutrition can be saved from a measured pack
   await page.getByRole('textbox',{name:'Fat (g) per label serving',exact:true}).fill('4');
   await page.getByRole('textbox',{name:'Fiber (g) per label serving',exact:true}).fill('0');
   await page.getByRole('button',{name:'Save custom food',exact:true}).click();
+  await page.getByRole('button',{name:'Choose amount',exact:true}).click();
   await page.getByRole('textbox',{name:'Quantity',exact:true}).fill('103');
   await page.getByRole('button',{name:'Add to dish',exact:true}).click();
   await expect(page.getByText('50 kcal',{exact:true}).first()).toBeVisible();
+});
+
+test('the photographed Youngs barcode is retained while an invalid partial read never reaches lookup',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  let calls=0;
+  await page.route('https://world.openfoodfacts.org/**',async route=>{
+    calls++;
+    expect(route.request().url()).toContain('/api/v2/product/8964000061121.json');
+    await route.fulfill({json:{status:1,product:{code:'8964000061121'}}});
+  });
+  await start(page);
+  await page.getByRole('button',{name:'Scan barcode or QR code',exact:true}).click();
+  await page.getByRole('textbox',{name:'Barcode or QR link'}).fill('19640008');
+  await page.getByRole('button',{name:'Find product',exact:true}).click();
+  await expect(page.getByText(/barcode is incomplete or was misread/)).toBeVisible();
+  expect(calls).toBe(0);
+  await page.getByRole('textbox',{name:'Barcode or QR link'}).fill('8964000061121');
+  await page.getByRole('button',{name:'Find product',exact:true}).click();
+  await expect(page.getByText('Product 8964000061121',{exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Choose amount',exact:true})).toHaveCount(0);
+  await page.screenshot({path:'artifacts/mise-incomplete-product-review.png'});
+  await page.getByRole('button',{name:'Complete package label',exact:true}).click();
+  await expect(page.getByRole('textbox',{name:'Product barcode (optional)',exact:true})).toHaveValue('8964000061121');
+  await expect(page.getByRole('textbox',{name:'Label serving weight (g)',exact:true})).toHaveValue('');
+  await page.getByRole('textbox',{name:'Food name',exact:true}).fill('Youngs mayonnaise — my label');
+  // Synthetic user-entered values test conversion, not the real product's nutrition.
+  await page.getByRole('textbox',{name:'Label serving weight (g)',exact:true}).fill('10');
+  await page.getByRole('textbox',{name:'Calories (kcal) per label serving',exact:true}).fill('50');
+  await page.getByRole('button',{name:'Save custom food',exact:true}).click();
+  await page.getByRole('button',{name:'Choose amount',exact:true}).click();
+  await page.getByRole('textbox',{name:'Quantity',exact:true}).fill('20');
+  await page.getByRole('button',{name:'Add to dish',exact:true}).click();
+  await expect(page.getByText('100 kcal',{exact:true}).first()).toBeVisible();
+  expect(calls).toBe(1);
 });

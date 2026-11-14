@@ -2,6 +2,14 @@
 
 Latest verification: 14 November 2026.
 
+## 0.8.1 keyboard focus and barcode recognition
+
+Profile fields now use nonshrinking layouts, Next/Done focus navigation, and keyboard/viewport-aware focus scrolling. Correcting a field clears its stale validation message. The same focus scrolling is available in sheets. Scanner lookup validates retail check digits, normalizes UPC-E camera results, and waits for matching camera detections; incomplete public records remain visible for package-label completion and are blocked from recipe calculation until completed.
+
+Live checks found that the screenshot's `19640008` maps to an unrelated volume-based record and fails the retail check digit. The actual photographed code `8964000061121` is valid but its public record contains no name or nutrition. The app retains that full identifier and offers verified manual entry without fabricating Young’s nutrition. See `PRODUCT_SCANNING.md`.
+
+Workspace types/lint, 84 domain/API tests, all 22 browser workflows, and Android Hermes export passed. Regression checks cover focus navigation and height visibility in a 360 px-tall viewport, stale error removal, rejection of the partial scan before network lookup, retention/completion of the exact photographed barcode, and blocking unverified product records from meal calculations. Phone layouts were visually reviewed. No Android device was connected; Samsung keyboard and physical-camera verification remain outstanding.
+
 ## 0.8.0 product QR and label review
 
 Barcode and supported product QR lookup now open a product review with available brand, ingredient/allergen text, and nutrition per 100 g. Users can choose an amount directly or save/edit a custom product and add it to normal meal/portion calculations. Source records can be refreshed online, personal copies remain available offline, and product-name/manual-label fallbacks handle unsupported identifiers and missing gram-based nutrition. Metadata and attribution survive saved recipes and backups. See `PRODUCT_SCANNING.md` for coverage and limits.

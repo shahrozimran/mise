@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {publicProduct,foodSchema,productBarcode,makeIngredient,calculateRecipe,equalPortion} from '../src';
+import {publicProduct,publicProductMatch,foodSchema,productBarcode,makeIngredient,calculateRecipe,equalPortion} from '../src';
 const product={code:'3017620422003',product_name:'Example label',nutrition_data_per:'100g',nutriments:{'energy-kcal_100g':540,proteins_100g:6,carbohydrates_100g:57,fat_100g:31}};
 test('public label lookup preserves known nutrition and missing fiber',()=>{
   const food=foodSchema.parse(publicProduct(product));
@@ -45,4 +45,30 @@ test('a scanned product combines with other ingredients without counting label s
   assert.equal(recipe.ingredients.length,2);
   assert.deepEqual(calculateRecipe(recipe).totals,{kcal:370,protein:23,carbs:33.5,fat:17.5,fiber:5});
   assert.equal(equalPortion(recipe).kcal,185);
+});
+
+test('retail barcode validation rejects the partial camera read and expands UPC-E',()=>{
+  assert.equal(productBarcode('19640008'),null);
+  assert.equal(productBarcode('8964000061121'),'8964000061121');
+  assert.equal(productBarcode('8964000061122'),null);
+  assert.equal(productBarcode('00000000'),null);
+  assert.equal(productBarcode('01234558','upc_e'),'012345000058');
+  assert.equal(productBarcode('01234559','upc_e'),null);
+});
+
+test('an incomplete valid product record remains visible but cannot be counted as food',()=>{
+  const partial=foodSchema.parse(publicProductMatch({code:'8964000061121'}));
+  assert.equal(partial.barcode,'8964000061121');
+  assert.equal(partial.requiresLabel,true);
+  assert.equal(partial.nutrients.kcal,null);
+  assert.throws(()=>makeIngredient(partial,100,'g','unverified'),/package nutrition/);
+  assert.equal(publicProductMatch({code:'19640008',product_name:'Wrong record'}),null);
+});
+
+test('volume-only matches preserve identity without importing volume nutrients as grams',()=>{
+  const partial=foodSchema.parse(publicProductMatch({...product,nutrition_data_per:'100ml',ingredients_text_en:'Oil, eggs'}));
+  assert.equal(partial.name,'Example label');
+  assert.equal(partial.requiresLabel,true);
+  assert.equal(partial.ingredientsText,'Oil, eggs');
+  assert.deepEqual(partial.nutrients,{kcal:null,protein:null,carbs:null,fat:null,fiber:null});
 });

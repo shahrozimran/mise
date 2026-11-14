@@ -1,9 +1,12 @@
-import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { useRef, useState } from "react";
+import { Keyboard, View, ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PersonalDetails, personalDetailsSchema, Preferences } from "@mise/domain";
 import { BrandMark, Button, Field, Muted, Notice, Row, Txt, useTheme } from "./ui";
 import { Enter } from "./motion";
+import { InputHandle, KeyboardScroll } from "./KeyboardScroll";
+
+const profileFieldStyle: ViewStyle = { flexGrow: 0, flexShrink: 0, flexBasis: "auto" };
 
 function numericInput(value: string) {
   const normalized = value.trim().replace(",", ".");
@@ -25,6 +28,12 @@ export function PersonalDetailsForm({
   const [height, setHeight] = useState(initial.heightCm === null ? "" : String(initial.heightCm));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
+  const inputs = useRef<Record<string, InputHandle | null>>({});
+  function edit(field: string, setter: (value: string) => void, value: string) {
+    setter(value);
+    setErrors((previous) => { const next = { ...previous }; delete next[field]; return next; });
+    setError("");
+  }
   function submit() {
     const result = personalDetailsSchema.safeParse({
       name,
@@ -41,11 +50,14 @@ export function PersonalDetailsForm({
         ...(fields.has("heightCm") && { height: "Enter a height between 30 and 300 cm." }),
       });
       setError("Check the highlighted fields to continue.");
+      const first = ["name", "age", "weightKg", "heightCm"].find((key) => fields.has(key));
+      if (first) inputs.current[first]?.focus();
       return;
     }
     setErrors({});
     setError("");
     try {
+      Keyboard.dismiss();
       onSave(result.data);
     } catch {
       setError("Your details could not be saved. Please try again.");
@@ -54,12 +66,10 @@ export function PersonalDetailsForm({
   return (
     <View style={{ gap: 18 }}>
       {!!error && <Notice error>{error}</Notice>}
-      <Field label="Name" value={name} onChangeText={setName} maxLength={40} autoComplete="name" autoCapitalize="words" placeholder="Your name" error={errors.name} />
-      <Field label="Age (years)" value={age} onChangeText={setAge} keyboardType="number-pad" maxLength={3} placeholder="e.g. 28" error={errors.age} />
-      <Row style={{ flexWrap: "wrap", alignItems: "flex-start", gap: 18 }}>
-        <Field containerStyle={{ flexBasis: 200, flexGrow: 1 }} label="Current weight (kg)" value={weight} onChangeText={setWeight} keyboardType="decimal-pad" maxLength={7} placeholder="e.g. 70" error={errors.weight} />
-        <Field containerStyle={{ flexBasis: 200, flexGrow: 1 }} label="Height (cm)" value={height} onChangeText={setHeight} keyboardType="decimal-pad" maxLength={7} placeholder="e.g. 175" error={errors.height} />
-      </Row>
+      <Field containerStyle={profileFieldStyle} inputRef={(node) => { inputs.current.name = node; }} label="Name" value={name} onChangeText={(value) => edit("name", setName, value)} maxLength={40} autoComplete="name" autoCapitalize="words" placeholder="Your name" error={errors.name} returnKeyType="next" submitBehavior="submit" onSubmitEditing={() => inputs.current.age?.focus()} />
+      <Field containerStyle={profileFieldStyle} inputRef={(node) => { inputs.current.age = node; }} label="Age (years)" value={age} onChangeText={(value) => edit("age", setAge, value)} keyboardType="number-pad" maxLength={3} placeholder="e.g. 28" error={errors.age} returnKeyType="next" submitBehavior="submit" onSubmitEditing={() => inputs.current.weightKg?.focus()} />
+      <Field containerStyle={profileFieldStyle} inputRef={(node) => { inputs.current.weightKg = node; }} label="Current weight (kg)" value={weight} onChangeText={(value) => edit("weight", setWeight, value)} keyboardType="decimal-pad" maxLength={7} placeholder="e.g. 70" error={errors.weight} returnKeyType="next" submitBehavior="submit" onSubmitEditing={() => inputs.current.heightCm?.focus()} />
+      <Field containerStyle={profileFieldStyle} inputRef={(node) => { inputs.current.heightCm = node; }} label="Height (cm)" value={height} onChangeText={(value) => edit("height", setHeight, value)} keyboardType="decimal-pad" maxLength={7} placeholder="e.g. 175" error={errors.height} returnKeyType="done" onSubmitEditing={() => Keyboard.dismiss()} />
       <Muted>Your details stay on this device. You can change them in Settings.</Muted>
       <Button label={submitLabel} onPress={submit} />
     </View>
@@ -73,7 +83,7 @@ export function PersonalDetailsIntro({ initial, onSave }: {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={{ padding: 24, paddingBottom: insets.bottom + 32 }}>
+    <KeyboardScroll testID="profile-scroll" style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ padding: 24, paddingBottom: insets.bottom + 32 }}>
       <View style={{ maxWidth: 560, width: "100%", alignSelf: "center", gap: 28 }}>
         <Row><BrandMark /><Txt style={{ fontSize: 29, fontWeight: "700", letterSpacing: -1.2 }}>mise.</Txt></Row>
         <Enter>
@@ -89,6 +99,6 @@ export function PersonalDetailsIntro({ initial, onSave }: {
           <PersonalDetailsForm initial={initial} submitLabel="Continue to preferences" onSave={onSave} />
         </Enter>
       </View>
-    </ScrollView>
+    </KeyboardScroll>
   );
 }

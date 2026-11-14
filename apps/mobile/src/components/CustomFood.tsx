@@ -19,16 +19,16 @@ export function CustomFood({
   initialFood?: Food;
   onSaved?: (food: Food) => void;
 }) {
-  const initialBasis = initialFood?.measures.find((m) => m.unit === "serving")?.grams ?? 100;
+  const initialBasis = initialFood?.requiresLabel ? null : initialFood?.measures.find((m) => m.unit === "serving")?.grams ?? 100;
   const [name, setName] = useState(initialFood?.name ?? "");
   const [brand, setBrand] = useState(initialFood?.brand ?? "");
   const [ingredientsText, setIngredientsText] = useState(initialFood?.ingredientsText ?? "");
   const [allergensText, setAllergensText] = useState(initialFood?.allergensText ?? "");
   const [barcodeText, setBarcodeText] = useState(initialFood?.barcode ?? barcode ?? "");
-  const [basis, setBasis] = useState(String(initialBasis));
+  const [basis, setBasis] = useState(initialBasis === null ? "" : String(initialBasis));
   const [values, setValues] = useState<Record<string, string>>(() => Object.fromEntries(nutrientKeys.map((key) => {
     const value = initialFood?.nutrients[key];
-    return [key, value === null || value === undefined ? "" : String(Number((value * initialBasis / 100).toFixed(5)))];
+    return [key, value === null || value === undefined || initialBasis === null ? "" : String(Number((value * initialBasis / 100).toFixed(5)))];
   })));
   const [error, setError] = useState("");
   return (
@@ -39,6 +39,7 @@ export function CustomFood({
       subtitle="Enter label values and the gram weight they refer to."
     >
       <View style={{ gap: 16 }}>
+      {initialFood?.requiresLabel && <Notice>The online record is incomplete. Enter the package values and the measured gram weight they refer to. Volume in ml is not a gram weight.</Notice>}
       <Field containerStyle={productFieldStyle}
         label="Food name"
         value={name}
@@ -85,6 +86,7 @@ export function CustomFood({
               const grams = Number(basis);
               if (!name.trim() || !Number.isFinite(grams) || grams <= 0)
                 throw new Error("Enter a name and a positive serving weight.");
+              if (initialFood?.requiresLabel && !nutrientKeys.some((key) => values[key]?.trim())) throw new Error("Enter at least one nutrition value from the package label.");
               const savedBarcode = barcodeText.trim() ? productBarcode(barcodeText) : undefined;
               if (savedBarcode === null) throw new Error("Enter a valid product barcode or clear the optional barcode field.");
               const nutrients = Object.fromEntries(

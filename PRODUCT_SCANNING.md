@@ -2,11 +2,13 @@
 
 Version 0.8.0 adds a review-and-save flow for packaged products. Camera scanning runs on the device; online label lookup uses Open Food Facts with the optional USDA proxy as a fallback. A found product is cached for offline reuse before any amount is added to a meal.
 
+Version 0.8.1 validates GTIN check digits, expands camera-reported UPC-E to UPC-A, and requires two matching camera detections before lookup. Invalid partial reads keep the camera running with guidance. The photographed read `19640008` fails validation; the complete package code `8964000061121` is valid.
+
 ## Flow
 
 1. Choose Scan barcode or QR code in the meal builder. Camera permission is optional; barcode digits or a product QR link can also be pasted.
 2. Review the matched name, brand, available ingredient/allergen text, and nutrition per 100 g. The record must match the package. Missing label text is described as unavailable; unknown nutrients remain unknown.
-3. Choose amount to add the product directly, or Save as custom product to review/correct the label values and save a personal copy. Existing custom products can be edited. Gram-based label serving sizes are retained when the source supplies them.
+3. Choose amount to add the product directly, or Save as custom product to review/correct the label values and save a personal copy. Incomplete records instead offer Complete package label; they cannot be added until gram-based nutrition is entered. Existing custom products can be edited. Gram-based label serving sizes are retained when the source supplies them.
 4. Choose the amount used and add it to the dish. The regular recipe engine combines it with other foods and calculates whole-batch and per-portion values. The label's ingredient text is descriptive; its sub-ingredients are not counted a second time.
 
 Personal copies retain product metadata and source attribution in local storage, recipes, and backups. Scanner lookup prioritizes the local custom copy of the same barcode. Online Refresh product data is available for cached source records; it does not overwrite a personal copy. A manually entered label can be saved and added to the meal immediately.
@@ -19,7 +21,9 @@ Scanned URLs are parsed for identifiers and are never opened or scraped. Generic
 
 ## Data limits
 
-Online product coverage and completeness vary. The app does not infer calories, ingredient weights, or allergens from an ingredient list. Public records without a usable explicit 100 g basis are not treated as gram nutrition. A liquid labeled by volume requires the user to provide its measured gram weight and nutrition basis. Community records and edited custom values must be checked against the package, including allergen and cross-contact statements.
+Online product coverage and completeness vary. The app does not infer calories, ingredient weights, or allergens from an ingredient list. Public records without a usable explicit 100 g basis remain visible as incomplete identity records, with all normalized nutrients unknown. The recipe engine blocks these records until the label is completed. The gram-weight field starts empty during completion to avoid implying that ml equals grams. A liquid labeled by volume requires the user to provide its measured gram weight and nutrition basis. Community records and edited custom values must be checked against the package, including allergen and cross-contact statements.
+
+At verification on 14 November 2026, the public record for `8964000061121` contained its code but no name or nutrition. Recognition can be corrected in the app; automatic Young’s nutrition cannot be recovered from that empty upstream record. The package’s volume-based label is not converted to grams without a measured weight.
 
 ## Verification
 

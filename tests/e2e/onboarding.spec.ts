@@ -198,3 +198,32 @@ test("profile avatar opens Settings and personal edits validate, cancel, and per
   await expect(page.getByRole("textbox", { name: "Current weight (kg)", exact: true })).toHaveValue("72.4");
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
 });
+
+test("profile fields advance and remain visible in a keyboard-sized viewport without stale errors", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 740 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Continue to preferences", exact: true }).click();
+  const name = page.getByRole("textbox", { name: "Name", exact: true });
+  const age = page.getByRole("textbox", { name: "Age (years)", exact: true });
+  const weight = page.getByRole("textbox", { name: "Current weight (kg)", exact: true });
+  const height = page.getByRole("textbox", { name: "Height (cm)", exact: true });
+  await name.fill("Shahroz");
+  await expect(page.getByText("Enter your name (up to 40 characters).", { exact: true })).toHaveCount(0);
+  await name.press("Enter");
+  await expect(age).toBeFocused();
+  await age.fill("23");
+  await expect(page.getByText("Enter a whole age between 1 and 120.", { exact: true })).toHaveCount(0);
+  await age.press("Enter");
+  await expect(weight).toBeFocused();
+  await weight.fill("60");
+  await weight.press("Enter");
+  await expect(height).toBeFocused();
+  await page.setViewportSize({ width: 360, height: 360 });
+  await expect(height).toBeInViewport({ ratio: 1 });
+  await height.fill("175");
+  await expect(page.getByText("Enter a height between 30 and 300 cm.", { exact: true })).toHaveCount(0);
+  await page.screenshot({ path: "artifacts/mise-profile-height-short-viewport.png" });
+  await height.press("Enter");
+  await page.getByRole("button", { name: "Continue to preferences", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "What brings you here?", exact: true })).toBeVisible();
+});

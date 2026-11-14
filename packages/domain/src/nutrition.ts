@@ -110,6 +110,7 @@ export function makeIngredient(
   id: string,
   convention: UnitConvention = "us",
 ): Ingredient {
+  if (food.requiresLabel) throw new Error("Enter this product’s package nutrition and gram serving weight before adding it.");
   return {
     id,
     food: clone(food),

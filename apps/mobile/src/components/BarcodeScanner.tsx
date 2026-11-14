@@ -28,6 +28,8 @@ export function BarcodeScanner({ visible, onClose, onAdd, onManualFood }: {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Food[]>([]);
   const finding = useRef(false);
+  const cameraCandidate = useRef<{ barcode: string; at: number } | null>(null);
+  const [scanHint, setScanHint] = useState("Point at the complete barcode and hold steady.");
   function selectProduct(food: Food) {
     useKitchen.getState().addCustomFood(food);
     setProduct(food);
@@ -41,7 +43,7 @@ export function BarcodeScanner({ visible, onClose, onAdd, onManualFood }: {
     setError("");
     try {
       const barcode = productBarcode(value);
-      if (!barcode) throw new Error("This QR code does not include a supported product identifier. Scan the printed barcode or search by product name below.");
+      if (!barcode) throw new Error(/^\d/.test(value.trim()) ? "This barcode is incomplete or was misread. Scan the full barcode or enter all the printed digits." : "This QR code does not include a supported product identifier. Scan the printed barcode or search by product name below.");
       const local = [...useKitchen.getState().data!.customFoods, ...foods].find(
         (f) => f.barcode?.padStart(14, "0") === barcode.padStart(14, "0"),
       );
@@ -86,18 +88,18 @@ export function BarcodeScanner({ visible, onClose, onAdd, onManualFood }: {
         {!!product.brand && <Muted>{product.brand}</Muted>}
         <Muted>{product.source} · Barcode {product.barcode ?? "not provided"}</Muted>
       </View>
-      <View style={{ backgroundColor: colors.pale, padding: 16, borderRadius: 12, gap: 12 }}>
+      {product.requiresLabel ? <Notice>Barcode recognized. The online record does not have usable gram-based nutrition. Complete the package label to calculate this product’s calories and macros.</Notice> : <View style={{ backgroundColor: colors.pale, padding: 16, borderRadius: 12, gap: 12 }}>
         <Txt style={{ fontWeight: "600" }}>Nutrition per 100 g</Txt>
         <MiniMacros nutrients={product.nutrients} />
-      </View>
+      </View>}
       <View style={{ gap: 8 }}>
         <Txt style={{ fontWeight: "600" }}>Package ingredients</Txt>
         <Muted>{product.ingredientsText || "The data source did not provide an ingredient list. You can add it when saving a custom product."}</Muted>
         {!!product.allergensText && <Muted>Reported allergens: {product.allergensText.replace(/\b[a-z]{2}:/g, "")}</Muted>}
       </View>
       <Muted>Check your package for ingredients, allergens, and nutrition. Listed sub-ingredients are not added separately to your meal; the product’s label nutrition is counted once.</Muted>
-      <Button label="Choose amount" disabled={busy} onPress={() => setChoosingAmount(true)} />
-      <Button label={product.source === "Custom" ? "Edit custom product" : "Save as custom product"} disabled={busy} variant="secondary" onPress={() => setEditing(true)} />
+      {!product.requiresLabel && <Button label="Choose amount" disabled={busy} onPress={() => setChoosingAmount(true)} />}
+      <Button label={product.requiresLabel ? "Complete package label" : product.source === "Custom" ? "Edit custom product" : "Save as custom product"} disabled={busy} variant={product.requiresLabel ? "primary" : "secondary"} onPress={() => setEditing(true)} />
       {product.source !== "Custom" && !!product.barcode && <Button label="Refresh product data" loading={busy} variant="ghost" onPress={() => void refresh()} />}
       <Button label="Scan another product" variant="ghost" onPress={() => { setProduct(null); setCode(""); setSearching(false); setResults([]); }} />
     </Sheet>
@@ -106,7 +108,16 @@ export function BarcodeScanner({ visible, onClose, onAdd, onManualFood }: {
     <Sheet visible={visible} title="Scan a product" subtitle="Scan a barcode or a product QR code, then review its label data." onClose={onClose}>
       {Platform.OS !== "web" && permission?.granted && !searching ? (
         <View style={{ height: 230, borderRadius: 16, overflow: "hidden" }}>
-          <CameraView style={{ flex: 1 }} barcodeScannerSettings={{ barcodeTypes: ["ean13", "ean8", "upc_a", "upc_e", "qr", "datamatrix", "code128"] }} onBarcodeScanned={busy || error ? undefined : (event) => { void find(event.data); }} />
+          <CameraView style={{ flex: 1 }} barcodeScannerSettings={{ barcodeTypes: ["ean13", "ean8", "upc_a", "upc_e", "qr", "datamatrix", "code128"] }} onBarcodeScanned={busy || error ? undefined : (event) => {
+            const barcode = productBarcode(event.data, event.type);
+            if (!barcode) { cameraCandidate.current = null; setScanHint("Barcode not clear. Include the full code, or enter the printed number below."); return; }
+            const now = Date.now();
+            if (cameraCandidate.current?.barcode !== barcode || now - cameraCandidate.current.at > 1800) {
+              cameraCandidate.current = { barcode, at: now }; setScanHint("Code detected. Hold steady to confirm…"); return;
+            }
+            cameraCandidate.current = null;
+            void find(barcode);
+          }} />
         </View>
       ) : Platform.OS !== "web" && !searching ? (
         <Button label="Enable camera" icon="camera-outline" variant="secondary" onPress={() => {
@@ -114,6 +125,7 @@ export function BarcodeScanner({ visible, onClose, onAdd, onManualFood }: {
           else void requestPermission();
         }} />
       ) : Platform.OS === "web" && !searching ? <Notice>Use an Android device for camera scanning, or paste the barcode or product QR link below.</Notice> : null}
+      {Platform.OS !== "web" && permission?.granted && !searching && <Muted>{scanHint}</Muted>}
       {!searching ? <>
         <Field label="Barcode or QR link" value={code} onChangeText={(value) => { setCode(value); setError(""); }} autoCapitalize="none" autoCorrect={false} maxLength={4096} placeholder="Barcode digits or a product QR link" />
         <Button label="Find product" icon="search" disabled={!code.trim()} loading={busy} onPress={() => void find(code)} />

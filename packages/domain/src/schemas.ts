@@ -33,6 +33,7 @@ export const foodSchema = z.object({
   brand: z.string().max(300).optional(),
   ingredientsText: z.string().max(12000).optional(),
   allergensText: z.string().max(3000).optional(),
+  requiresLabel: z.boolean().optional(),
 });
 export const recipeSchema = z.object({
   id: z.string().min(1),

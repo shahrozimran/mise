@@ -1,4 +1,4 @@
-import { Food, foodSchema, publicProduct, productBarcode } from "@mise/domain";
+import { Food, foodSchema, publicProductMatch, productBarcode } from "@mise/domain";
 import * as Network from "expo-network";
 import * as SecureStore from "expo-secure-store";
 import { Platform } from "react-native";
@@ -51,13 +51,15 @@ export async function lookupBarcode(code: string): Promise<Food[]> {
   if (!barcode) throw new Error("This QR code does not contain a supported product identifier. Scan the package barcode or search by product name.");
   const lookupCode = barcode.length === 14 && barcode.startsWith('0') ? barcode.slice(1) : barcode;
   let publicError: unknown;
+  let incomplete: Food | undefined;
   try {
     const result = await publicLookup(`/api/v2/product/${lookupCode}.json?fields=${productFields}`);
     if (result.status !== 0 && result.product) {
-      const food = publicProduct(result.product);
-      if (!food) throw new Error("This product has no usable gram-based nutrition. Add it from the package label; liquid volumes need a measured gram weight.");
+      const food = publicProductMatch(result.product);
+      if (!food) throw new Error("The product record did not contain a valid barcode. Try the full printed number.");
       if (food.barcode?.padStart(14, '0') !== barcode.padStart(14, '0')) throw new Error("The product identifier did not match. Try the printed barcode.");
-      return [foodSchema.parse(food)];
+      if (!food.requiresLabel) return [foodSchema.parse(food)];
+      incomplete = foodSchema.parse(food);
     }
   } catch (error) { publicError = error; }
   if (API_URL) {
@@ -67,6 +69,7 @@ export async function lookupBarcode(code: string): Promise<Food[]> {
       if (matches.length) return matches;
     } catch { /* Public label lookup remains available when the optional server is down. */ }
   }
+  if (incomplete) return [incomplete];
   if (publicError) throw publicError;
   return [];
 }
@@ -90,7 +93,7 @@ async function publicLookup(path: string): Promise<{status?:number;product?:Reco
 }
 export async function searchProducts(query: string): Promise<Food[]> {
   const result = await publicLookup(`/cgi/search.pl?search_terms=${encodeURIComponent(query.slice(0,100))}&search_simple=1&action=process&json=1&page_size=12&fields=${productFields}`);
-  return (result.products??[]).map(publicProduct).filter((f):f is Food=>f!==null).map(f=>foodSchema.parse(f));
+  return (result.products??[]).map(publicProductMatch).filter((f):f is Food=>f!==null).map(f=>foodSchema.parse(f));
 }
 export async function installation(): Promise<{ id: string; secret: string }> {
   const stored = await secure.get("mise-installation");
