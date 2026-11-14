@@ -30,6 +30,9 @@ export const foodSchema = z.object({
   sourceId: z.string(),
   sourceVersion: z.string(),
   barcode: z.string().optional(),
+  brand: z.string().max(300).optional(),
+  ingredientsText: z.string().max(12000).optional(),
+  allergensText: z.string().max(3000).optional(),
 });
 export const recipeSchema = z.object({
   id: z.string().min(1),

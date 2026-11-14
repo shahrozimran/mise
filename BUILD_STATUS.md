@@ -2,6 +2,12 @@
 
 Latest verification: 14 November 2026.
 
+## 0.8.0 product QR and label review
+
+Barcode and supported product QR lookup now open a product review with available brand, ingredient/allergen text, and nutrition per 100 g. Users can choose an amount directly or save/edit a custom product and add it to normal meal/portion calculations. Source records can be refreshed online, personal copies remain available offline, and product-name/manual-label fallbacks handle unsupported identifiers and missing gram-based nutrition. Metadata and attribution survive saved recipes and backups. See `PRODUCT_SCANNING.md` for coverage and limits.
+
+Workspace types/lint and 81 domain/API tests passed. All 20 browser workflows were verified, with affected product cases rerun after editor-spacing and locator corrections. Checks include GS1 lookup, online refresh, custom-copy editing and provenance, combined totals and portions, offline reuse, product-name fallback, and measured liquid-label entry. Android Hermes export passed. A live public lookup and browser review returned a named product, ingredients, and nutrition; phone layouts were reviewed in both appearances. Native QR/barcode camera recognition and device performance remain unverified.
+
 ## 0.7.0 personal profile and Settings
 
 New installations enter a required name, age, current weight (kg), and height (cm) before the existing five preference steps. The Home avatar displays the saved initial and opens Settings. A separate profile editor validates changes, supports cancellation, and preserves meal preferences. The Good data card was removed; attribution remains in Privacy and data use. The ingredient picker no longer displays the food-count / Wi-Fi subtitle. Existing completed setups remain usable, with missing personal measurements represented as unknown until entered in Settings. Details are included in local backups.

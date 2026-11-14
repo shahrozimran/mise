@@ -28,6 +28,9 @@ export interface Food {
   sourceId: string;
   sourceVersion: string;
   barcode?: string;
+  brand?: string;
+  ingredientsText?: string;
+  allergensText?: string;
 }
 export interface Ingredient {
   id: string;

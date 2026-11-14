@@ -63,6 +63,7 @@ export function FoodPicker({
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [showSource, setShowSource] = useState(false);
+  const [showIngredients, setShowIngredients] = useState(false);
   const list = useMemo(
     () => searchFoods([...data.customFoods, ...foods], query, 24),
     [query, data.customFoods],
@@ -126,6 +127,7 @@ export function FoodPicker({
             <Txt style={{ fontSize: 20, fontWeight: "600" }}>
               {selected.name}
             </Txt>
+            {!!selected.brand && <Muted>{selected.brand}</Muted>}
             <Muted>
               {selected.state} · {formatNumber(selected.nutrients.kcal, 0)} kcal
               per 100 g
@@ -138,6 +140,10 @@ export function FoodPicker({
             keyboardType="decimal-pad"
             placeholder="e.g. 150 or 1/2"
           />
+          {!!selected.ingredientsText && <>
+            <Button label={showIngredients ? "Hide package ingredients" : "Show package ingredients"} small variant="ghost" onPress={() => setShowIngredients(!showIngredients)} />
+            {showIngredients && <Muted>{selected.ingredientsText}</Muted>}
+          </>}
           {measureId === "g" && (
             <Row>
               {[50, 100, 200].map((value) => (

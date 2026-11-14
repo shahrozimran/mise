@@ -5,6 +5,7 @@ import {
   clone,
   equalPortion,
   formatNumber,
+  Food,
   Ingredient,
   multiplyNutrients,
   scaleRecipe,
@@ -69,6 +70,7 @@ function KitchenEditor() {
   >(null);
   const [extraTools, setExtraTools] = useState(false);
   const [barcodeForLabel, setBarcodeForLabel] = useState<string | undefined>();
+  const [customForMeal, setCustomForMeal] = useState<Food | null>(null);
   const [showNotes, setShowNotes] = useState(false);
   const [edit, setEdit] = useState<Ingredient | undefined>();
   const [message, setMessage] = useState("");
@@ -241,7 +243,7 @@ function KitchenEditor() {
                 />
                 <Pressable
                   accessibilityRole="button"
-                  accessibilityLabel="Scan a barcode"
+                  accessibilityLabel="Scan barcode or QR code"
                   onPress={() => setModal("scan")}
                   style={s.iconButton}
                 >
@@ -329,6 +331,7 @@ function KitchenEditor() {
               variant="secondary"
               onPress={() => {
                 setEdit(undefined);
+                setCustomForMeal(null);
                 setModal("food");
               }}
             />
@@ -550,7 +553,8 @@ function KitchenEditor() {
           key={edit?.id ?? "new"}
           visible
           existing={edit}
-          onClose={() => setModal(null)}
+          initialFood={customForMeal ?? undefined}
+          onClose={() => { setModal(null); setCustomForMeal(null); }}
           onAdd={(ingredient) => {
             if (edit)
               updateDraft({
@@ -579,7 +583,12 @@ function KitchenEditor() {
           onClose={() => {
             setModal(null);
             setBarcodeForLabel(undefined);
-            setMessage("Custom food saved. Find it in Add ingredient.");
+          }}
+          onSaved={(food) => {
+            setCustomForMeal(food);
+            setEdit(undefined);
+            setBarcodeForLabel(undefined);
+            setModal("food");
           }}
         />
       )}
@@ -588,7 +597,7 @@ function KitchenEditor() {
           visible
           onClose={() => setModal(null)}
           onAdd={addIngredient}
-          onManualFood={(code) => {setBarcodeForLabel(code);setModal("custom");}}
+          onManualFood={(code) => {setBarcodeForLabel(code || undefined);setModal("custom");}}
         />
       )}
       {modal === "pro" && <ProSheet visible onClose={() => setModal(null)} />}
